@@ -1,0 +1,9 @@
+{% block content %}
+  <h2>Delete Person</h2>
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+  </form>
+  <a href="{% url 'persons:index' %}">Cancel</a>
+{% endblock %}

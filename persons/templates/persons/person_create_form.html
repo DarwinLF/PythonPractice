@@ -1,0 +1,18 @@
+{% block content %}
+  <h1>Create a new person</h1>
+  {% if person %}
+    <h2>The last person created was {{person}} with age: {{person.age}}</h2>
+  {% endif %}
+  <form action="{% url 'persons:createPerson' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}
+
+{% if form.errors %}
+  <div class="error">
+    <p>Please correct the following errors:</p>
+    {{ form.errors }}
+  </div>
+{% endif %}

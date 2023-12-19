@@ -1,0 +1,15 @@
+{% block content %}
+  <h1>Edit a person</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update</button>
+  </form>
+{% endblock %}
+
+{% if form.errors %}
+  <div class="error">
+    <p>Please correct the following errors:</p>
+    {{ form.errors }}
+  </div>
+{% endif %}
