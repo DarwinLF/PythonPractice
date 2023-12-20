@@ -1,4 +1,4 @@
-<a href="{% url 'persons:add' %}">Add new person</a>
+<a href="{% url 'persons:person_add' %}">Add new person</a>
 
 {% if person_list %}
     <table>
@@ -16,8 +16,8 @@
                 <td>{{person.last_name}}</td>
                 <td>{{person.rnc}}</td>
                 <td>{{person.getAge}}</td>
-                <td><a href="{% url 'persons:edit' person.id %}">Edit</a></td>
-                <td><a href="{% url 'persons:deletePerson' person.id %}">Delete</a></td>
+                <td><a href="{% url 'persons:person_edit' person.id %}">Edit</a></td>
+                <td><a href="{% url 'persons:person_delete' person.id %}">Delete</a></td>
             </tr>
         {% endfor %}
     </table>
