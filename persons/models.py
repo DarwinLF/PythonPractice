@@ -19,20 +19,26 @@ class Person(models.Model):
     def save(self, *args, **kwargs):
         self.rnc = self.rnc.replace('-', '')
         super().save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
     
-    def getAge(self):
-        today = date.today()
-        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+    # def getAge(self):
+    #     today = date.today()
+    #     return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
     
     @property
     def age(self):
         today = date.today()
         return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
     
-class Book(models.Model):
-    title = models.CharField(max_length=255)
-    published_date = models.DateField()
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='books')
+class Customer(Person):
+    library = models.ForeignKey('libraries.Library', on_delete=models.PROTECT, related_name='customers')
 
+class Author(Person):
+    alias = models.CharField(max_length=100)
     def __str__(self):
-        return self.title
+        return super().__str__() + f" ({self.alias})"
+
+class Employee(Person):
+    library = models.ForeignKey('libraries.Library', on_delete=models.PROTECT, related_name='employees')

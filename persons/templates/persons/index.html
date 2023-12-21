@@ -15,7 +15,7 @@
                 <td>{{person.first_name}}</td>
                 <td>{{person.last_name}}</td>
                 <td>{{person.rnc}}</td>
-                <td>{{person.getAge}}</td>
+                <td>{{person.age}}</td>
                 <td><a href="{% url 'persons:person_edit' person.id %}">Edit</a></td>
                 <td><a href="{% url 'persons:person_delete' person.id %}">Delete</a></td>
             </tr>
