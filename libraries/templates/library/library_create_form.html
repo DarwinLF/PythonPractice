@@ -1,0 +1,17 @@
+{% block content %}
+  <h1>Create a new library</h1>
+  <form action="{% url 'libraries:library_create' %}" method="post">
+    {% csrf_token %}
+    {{form.name.label_tag}} {{form.name}}</br></br>
+    {{form.location.label_tag}} {{form.location}}</br></br>
+    {{form.rnc.label_tag}} {{form.rnc}}</br></br>
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}
+
+{% if form.errors %}
+  <div class="error">
+    <p>Please correct the following errors:</p>
+    {{ form.errors }}
+  </div>
+{% endif %}

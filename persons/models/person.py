@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse
 
 from datetime import date
 
@@ -12,9 +11,6 @@ class Person(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-    def get_absolute_url(self):
-        return reverse("persons:person_index")
     
     def save(self, *args, **kwargs):
         self.rnc = self.rnc.replace('-', '')
@@ -31,14 +27,3 @@ class Person(models.Model):
     def age(self):
         today = date.today()
         return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
-    
-class Customer(Person):
-    library = models.ForeignKey('libraries.Library', on_delete=models.PROTECT, related_name='customers')
-
-class Author(Person):
-    alias = models.CharField(max_length=100)
-    def __str__(self):
-        return super().__str__() + f" ({self.alias})"
-
-class Employee(Person):
-    library = models.ForeignKey('libraries.Library', on_delete=models.PROTECT, related_name='employees')
