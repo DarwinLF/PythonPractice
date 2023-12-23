@@ -14,7 +14,7 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Author.objects.all()
     
-class AddView(generic.CreateView):
+class CreateView(generic.CreateView):
     model = Author
     form_class = AuthorForm
     template_name_suffix = '_create_form'
@@ -37,10 +37,10 @@ class AddView(generic.CreateView):
 
         return HttpResponseRedirect(reverse('persons:author_index'))
     
-class EditView(generic.UpdateView):
+class UpdateView(generic.UpdateView):
     model = Author
     form_class = AuthorForm
-    template_name = 'author/author_edit.html'
+    template_name = 'author/author_update.html'
     success_url = reverse_lazy('persons:author_index')
 
     def form_valid(self, form):

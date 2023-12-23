@@ -76,20 +76,20 @@ def create_library(name, location, rnc):
         'rnc': rnc,
     }
 
-class EditViewTests(TestCase):
+class UpdateViewTests(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name='library1', location='Tenares', rnc='123-1234567-1')
         self.library2 = Library.objects.create(name='library2', location='Salcedo', rnc='111-2222222-3')
-        self.url = reverse('libraries:library_edit', args=[self.library2.pk])
+        self.url = reverse('libraries:library_update', args=[self.library2.pk])
         self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'library/library_edit.html')
+        self.assertTemplateUsed(response, 'library/library_update.html')
 
-    def test_edit_to_duplicate_rnc(self):
+    def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
         #with self.assertRaises(IntegrityError):
         updated_data = create_library(self.library2.name, self.library2.location, self.library1.rnc)
@@ -100,7 +100,7 @@ class EditViewTests(TestCase):
         # self.library2.refresh_from_db()
         self.assertEqual(self.library2.rnc, '11122222223')
 
-    def test_edit_all_fields_except_rnc(self):
+    def test_update_all_fields_except_rnc(self):
         # Submit the form with updated data
         updated_data = create_library('libreria3', 'Santiago', self.library2.rnc)
         response = self.client.post(self.url, updated_data, follow=True)

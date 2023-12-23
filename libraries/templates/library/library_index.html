@@ -13,7 +13,7 @@
                 <td>{{library.name}}</td>
                 <td>{{library.location}}</td>
                 <td>{{library.rnc}}</td>
-                <td><a href="{% url 'libraries:library_edit' library.id %}">Edit</a></td>
+                <td><a href="{% url 'libraries:library_update' library.id %}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>

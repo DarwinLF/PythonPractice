@@ -14,7 +14,7 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Library.objects.all()
     
-class AddView(generic.CreateView):
+class CreateView(generic.CreateView):
     model = Library
     form_class = LibraryForm
     template_name_suffix = '_create_form'
@@ -30,10 +30,10 @@ class AddView(generic.CreateView):
 
         return HttpResponseRedirect(reverse('libraries:library_index'))
     
-class EditView(generic.UpdateView):
+class UpdateView(generic.UpdateView):
     model = Library
     form_class = LibraryForm
-    template_name = 'library/library_edit.html'
+    template_name = 'library/library_update.html'
     success_url = reverse_lazy('libraries:library_index')
 
     def form_valid(self, form):
