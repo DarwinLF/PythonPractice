@@ -12,8 +12,6 @@ class IndexView(generic.ListView):
     context_object_name = 'library_list'
 
     def get_queryset(self):
-        #Person.objects.filter(age__gte = 18) orm
-        #sum([x.age for x in listPerson if x.age >= 18])
         return Library.objects.all()
     
 class AddView(generic.CreateView):
@@ -23,15 +21,26 @@ class AddView(generic.CreateView):
     template_name = 'library/library_create_form.html'
     success_url = reverse_lazy('libraries:library_index')
 
-def LibraryCreate(request):
-    form = LibraryForm(request.POST)
-    if form.is_valid():
+    def form_valid(self, form):
         try:
-            form.save()
-            return HttpResponseRedirect(reverse('libraries:library_index'))
+            super().form_valid(form)
         except IntegrityError as e:
             form.add_error('rnc', 'RNC already exists')
-            return render(request, 'library/library_create_form.html', {'form': form})
+            return render(self.request, self.template_name, {'form': form})
 
-    else:
-        return render(request, 'library/library_create_form.html', {'form': form})
+        return HttpResponseRedirect(reverse('libraries:library_index'))
+    
+class EditView(generic.UpdateView):
+    model = Library
+    form_class = LibraryForm
+    template_name = 'library/library_edit.html'
+    success_url = reverse_lazy('libraries:library_index')
+
+    def form_valid(self, form):
+        try:
+            super().form_valid(form)
+        except IntegrityError as e:
+            form.add_error('rnc', 'RNC already exists')
+            return render(self.request, self.template_name, {'form': form})
+
+        return HttpResponseRedirect(reverse('libraries:library_index'))

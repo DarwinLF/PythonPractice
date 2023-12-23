@@ -1,11 +1,11 @@
 {% block content %}
-  <h1>Create a new library</h1>
+  <h1>Edit a library</h1>
   <form method="post">
     {% csrf_token %}
     {{form.name.label_tag}} {{form.name}}</br></br>
     {{form.location.label_tag}} {{form.location}}</br></br>
     {{form.rnc.label_tag}} {{form.rnc}}</br></br>
-    <button type="submit">Save</button>
+    <button type="submit">Update</button>
   </form>
 {% endblock %}
 

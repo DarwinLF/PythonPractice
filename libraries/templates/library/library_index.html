@@ -1,4 +1,4 @@
-<a href="{% url 'libraries:library_add' %}">Add new library</a>
+<a href="{% url 'libraries:library_create' %}">Create new library</a>
 
 {% if library_list %}
     <table>
@@ -6,16 +6,14 @@
             <th>Name</th>
             <th>Location</th>
             <th>RNC</th>
-            {% comment %} <th></th>
-            <th></th> {% endcomment %}
+            <th></th>
         </tr>
         {% for library in library_list %}
             <tr>
                 <td>{{library.name}}</td>
                 <td>{{library.location}}</td>
                 <td>{{library.rnc}}</td>
-                {% comment %} <td><a href="{% url 'persons:person_edit' person.id %}">Edit</a></td>
-                <td><a href="{% url 'persons:person_delete' person.id %}">Delete</a></td> {% endcomment %}
+                <td><a href="{% url 'libraries:library_edit' library.id %}">Edit</a></td>
             </tr>
         {% endfor %}
     </table>
