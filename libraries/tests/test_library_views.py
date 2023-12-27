@@ -2,8 +2,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.db import IntegrityError, transaction
 
-import json
-
 from ..models import Library
 
 class IndexViewTests(TestCase):
@@ -23,7 +21,7 @@ class IndexViewTests(TestCase):
         self.assertContains(response, '12312345671')
         self.assertTemplateUsed(response, 'library/library_index.html')
 
-class AddViewTests(TestCase):
+class CreateViewTests(TestCase):
     def setUp(self):
         self.url = reverse('libraries:library_create')
         self.client = Client()
@@ -91,13 +89,13 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        #with self.assertRaises(IntegrityError):
-        updated_data = create_library(self.library2.name, self.library2.location, self.library1.rnc)
-        response = self.client.post(self.url, updated_data, follow=True)
-        self.assertEqual(response.status_code, 200)
+        with transaction.atomic():
+            updated_data = create_library(self.library2.name, self.library2.location, self.library1.rnc)
+            response = self.client.post(self.url, updated_data, follow=True)
+            self.assertEqual(response.status_code, 200)
 
         # Refresh the person from the database
-        # self.library2.refresh_from_db()
+        self.library2.refresh_from_db()
         self.assertEqual(self.library2.rnc, '11122222223')
 
     def test_update_all_fields_except_rnc(self):

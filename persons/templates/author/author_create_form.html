@@ -1,15 +1,15 @@
 {% block content %}
-  <h1>Create a new person</h1>
+  <h1>Create a new author</h1>
   {% comment %} {% if person %}
     <h2>The last person created was {{person}} with age: {{person.age}}</h2>
   {% endif %} {% endcomment %}
-  <form action="{% url 'author:author_create' %}" method="post">
+  <form method="post">
     {% csrf_token %}
     {{form.first_name.label_tag}} {{form.first_name}}</br></br>
     {{form.last_name.label_tag}} {{form.last_name}}</br></br>
+    {{form.alias.label_tag}} {{form.alias}}</br></br>
     {{form.rnc.label_tag}} {{form.rnc}}</br></br>
     {{form.birthday.label_tag}} {{form.birthday}}</br></br>
-    {{form.alias.label_tag}} {{form.alias}}</br></br>
     <button type="submit">Save</button>
   </form>
 {% endblock %}
