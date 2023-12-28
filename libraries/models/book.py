@@ -3,7 +3,7 @@ from django.db import models
 class Book(models.Model):
     title = models.CharField(max_length = 200)
     published_date = models.DateField()
-    isbn = models.CharField(max_length = 13, unique = True )
+    isbn = models.CharField(max_length = 17, unique = True )
     quantity = models.IntegerField(default = 0)
     rent_price = models.FloatField(default = 0.0)
     sale_price = models.FloatField(default = 0.0)

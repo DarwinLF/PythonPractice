@@ -1,0 +1,22 @@
+{% block content %}
+  <h1>Edit a book</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{form.title.label_tag}} {{form.title}}</br></br>
+    {{form.published_date.label_tag}} {{form.published_date}}</br></br>
+    {{form.isbn.label_tag}} {{form.isbn}}</br></br>
+    {{form.quantity.label_tag}} {{form.quantity}}</br></br>
+    {{form.rent_price.label_tag}} {{form.rent_price}}</br></br>
+    {{form.sale_price.label_tag}} {{form.sale_price}}</br></br>
+    {{form.author.label_tag}} {{form.author}}</br></br>
+    {{form.status.label_tag}} {{form.status}}</br></br>
+    <button type="submit">Update</button>
+  </form>
+{% endblock %}
+
+{% if form.errors %}
+  <div class="error">
+    <p>Please correct the following errors:</p>
+    {{ form.errors }}
+  </div>
+{% endif %}

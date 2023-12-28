@@ -1,0 +1,26 @@
+<a href="{% url 'libraries:book_create' %}">Create new book</a>
+
+{% if book_list %}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Published Date</th>
+            <th>Quantity</th>
+            <th>Author</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        {% for book in book_list %}
+            <tr>
+                <td>{{book.title}}</td>
+                <td>{{book.published_date}}</td>
+                <td>{{book.quantity}}</td>
+                <td>{{book.author}}</td>
+                <td>{{book.status}}</td>
+                <td><a href="{% url 'libraries:book_update' book.id %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No books are available.</p>
+{% endif %}
