@@ -11,6 +11,9 @@ class Book(models.Model):
                                on_delete = models.PROTECT, 
                                related_name = 'books')
     status = models.ForeignKey('libraries.BookStatus', on_delete = models.PROTECT)
+    library = models.ForeignKey('libraries.Library', 
+                                on_delete = models.PROTECT,
+                                related_name = 'books')
 
     def __str__(self):
         return self.title

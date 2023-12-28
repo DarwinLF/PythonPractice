@@ -8,7 +8,7 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'published_date', 'isbn', 'quantity',
-                   'rent_price', 'sale_price', 'author', 'status']
+                   'rent_price', 'sale_price', 'author', 'library', 'status']
         widgets = {
             'published_date': forms.DateInput(attrs={'type': 'date'}),
         }

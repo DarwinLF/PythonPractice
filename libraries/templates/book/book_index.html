@@ -8,6 +8,7 @@
             <th>Published Date</th>
             <th>Quantity</th>
             <th>Author</th>
+            <th>Library</th>
             <th>Status</th>
             <th></th>
             <th></th>
@@ -18,6 +19,7 @@
                 <td>{{book.published_date}}</td>
                 <td>{{book.quantity}}</td>
                 <td>{{book.author}}</td>
+                <td>{{book.library}}</td>
                 <td>{{book.status}}</td>
                 <td><a href="{% url 'libraries:book_detail' book.id %}">Detail</a></td>
                 <td><a href="{% url 'libraries:book_update' book.id %}">Edit</a></td>
