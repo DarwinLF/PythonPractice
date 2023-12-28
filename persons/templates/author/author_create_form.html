@@ -1,4 +1,5 @@
 {% block content %}
+  <a href="{% url 'persons:author_index' %}">Go back</a>
   <h1>Create a new author</h1>
   {% comment %} {% if person %}
     <h2>The last person created was {{person}} with age: {{person.age}}</h2>

@@ -1,4 +1,5 @@
 {% block content %}
+  <a href="{% url 'libraries:book_index' %}">Go back</a>
   <h1>Create a new book</h1>
   <form method="post">
     {% csrf_token %}
