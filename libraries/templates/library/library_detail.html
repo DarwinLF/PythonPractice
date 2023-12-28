@@ -1,0 +1,13 @@
+<a href="{% url 'libraries:library_index' %}">Go back</a>
+
+<h1>{{ library }}</h1>
+<p>Location: {{ library.location }}</p>
+<p>RNC: {{ library.rnc }}</p>
+<h2>Books:</h2>
+<ul>
+    {% for book in library.books.all %}
+        <li><a href="{% url 'libraries:book_detail' book.id %}">{{book}}</a></li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'libraries:library_update' library.id %}">edit</a>
