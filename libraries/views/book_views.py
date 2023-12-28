@@ -44,3 +44,8 @@ class UpdateView(generic.UpdateView):
             return render(self.request, self.template_name, {'form': form})
 
         return HttpResponseRedirect(reverse('libraries:book_index'))
+    
+class DetailView(generic.DetailView):
+    model = Book
+    template_name = 'book/book_detail.html'
+    context_object_name = 'book'

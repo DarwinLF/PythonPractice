@@ -10,5 +10,6 @@ urlpatterns = [
     path('library/<int:pk>/', library_views.UpdateView.as_view(), name='library_update'),
     path('book/', book_views.IndexView.as_view(), name='book_index'),
     path('book/createBook/', book_views.CreateView.as_view(), name='book_create'),
-    path('book/<int:pk>/', book_views.UpdateView.as_view(), name='book_update'),
+    path('book/<int:pk>/', book_views.DetailView.as_view(), name='book_detail'),
+    path('book/<int:pk>/updateBook', book_views.UpdateView.as_view(), name='book_update'),
 ]

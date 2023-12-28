@@ -1,0 +1,12 @@
+<a href="{% url 'libraries:book_index' %}">Go back</a>
+
+<h1>{{ book.title }}</h1>
+<p>Author: {{ book.author }}</p>
+<p>Published Date: {{ book.published_date }}</p>
+<p>ISBN: {{ book.isbn }}</p>
+<p>Quantity: {{ book.quantity }}</p>
+<p>Rent Price: {{ book.rent_price }}</p>
+<p>Sale Price: {{ book.sale_price }}</p>
+<p>Status: {{ book.status }}</p>
+
+<a href="{% url 'libraries:book_update' book.id %}">edit</a>
