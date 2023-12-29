@@ -5,9 +5,9 @@
     {% csrf_token %}
     {{form.first_name.label_tag}} {{form.first_name}}</br></br>
     {{form.last_name.label_tag}} {{form.last_name}}</br></br>
+    {{form.alias.label_tag}} {{form.alias}}</br></br>
     {{form.rnc.label_tag}} {{form.rnc}}</br></br>
     {{form.birthday.label_tag}} {{form.birthday}}</br></br>
-    {{form.alias.label_tag}} {{form.alias}}</br></br>
     <button type="submit">Update</button>
   </form>
 {% endblock %}
