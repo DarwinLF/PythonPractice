@@ -4,10 +4,9 @@
   <form method="post">
     {% csrf_token %}
     {{form.book.label_tag}} {{form.book}}</br></br>
-    {{form.customer.label_tag}} {{form.customer_date}}</br></br>
+    {{form.customer.label_tag}} {{form.customer}}</br></br>
     {{form.employee.label_tag}} {{form.employee}}</br></br>
     {{form.library.label_tag}} {{form.library}}</br></br>
-    {{form.rent_date.label_tag}} {{form.rent_date}}</br></br>
     {{form.due_date.label_tag}} {{form.due_date}}</br></br>
     <button type="submit">Update</button>
   </form>
