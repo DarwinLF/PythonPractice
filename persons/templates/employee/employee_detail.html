@@ -1,0 +1,8 @@
+<a href="{% url 'persons:employee_index' %}">Go back</a>
+
+<h1>{{ employee }}</h1>
+<p>RNC: {{ employee.rnc }}</p>
+<p>Age: {{ employee.age }}</p>
+<p>Library: {{ employee.library }}</p>
+
+<a href="{% url 'persons:employee_update' employee.id %}">edit</a>

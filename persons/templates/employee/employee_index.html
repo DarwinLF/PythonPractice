@@ -1,0 +1,29 @@
+<a href="{% url 'persons:person_index' %}">Go back</a>
+<a href="{% url 'persons:employee_create' %}">Add new employee</a>
+
+{% if employee_list %}
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>RNC</th>
+            <th>Age</th>
+            <th>Library</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for employee in employee_list %}
+            <tr>
+                <td>{{employee.first_name}}</td>
+                <td>{{employee.last_name}}</td>
+                <td>{{employee.rnc}}</td>
+                <td>{{employee.age}}</td>
+                <td>{{employee.library}}</td>
+                <td><a href="{% url 'persons:employee_detail' employee.id %}">Detail</a></td>
+                <td><a href="{% url 'persons:employee_update' employee.id %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No employees are available.</p>
+{% endif %}

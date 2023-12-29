@@ -1,6 +1,6 @@
 {% block content %}
-  <a href="{% url 'persons:customer_index' %}">Go index</a>
-  <h1>Edit a customer</h1>
+  <a href="{% url 'persons:employee_index' %}">Go index</a>
+  <h1>Edit a employee</h1>
   <form method="post">
     {% csrf_token %}
     {{form.first_name.label_tag}} {{form.first_name}}</br></br>
