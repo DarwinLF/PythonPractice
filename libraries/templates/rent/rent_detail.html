@@ -1,0 +1,9 @@
+<a href="{% url 'libraries:rent_index' %}">Go back</a>
+
+<h1>{{ rent }}</h1>
+<p>Book: <a href="{% url 'libraries:book_detail' rent.book.id %}">{{ rent.book }}</a></p>
+<p>Employee: <a href="{% url 'libraries:employee_detail' rent.employee.id %}">{{ rent.employee }}</a></p>
+<p>Library: <a href="{% url 'libraries:library_detail' rent.library.id %}">{{ rent.library }}</a></p>
+<p>Rent Date: {{ rent.rent_date }}</p>
+
+<a href="{% url 'libraries:rent_update' rent.id %}">edit</a>

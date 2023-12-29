@@ -1,5 +1,7 @@
 from django.db import models
 
+from datetime import date
+
 class Rent(models.Model):
     book = models.ForeignKey('libraries.Book', on_delete = models.PROTECT)
     customer = models.ForeignKey('persons.Customer', 
@@ -16,3 +18,7 @@ class Rent(models.Model):
 
     def __str__(self):
         return f'{self.customer} - due date: {self.due_date}'
+    
+    def save(self, *args, **kwargs):
+        self.rent_date = date.today()
+        super().save(*args, **kwargs)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import libraries_views, library_views, book_views
+from .views import libraries_views, library_views, book_views, rent_views
 
 app_name = 'libraries'
 urlpatterns = [
@@ -13,4 +13,8 @@ urlpatterns = [
     path('book/createBook/', book_views.CreateView.as_view(), name='book_create'),
     path('book/<int:pk>/', book_views.DetailView.as_view(), name='book_detail'),
     path('book/<int:pk>/updateBook', book_views.UpdateView.as_view(), name='book_update'),
+    path('rent/', rent_views.IndexView.as_view(), name='rent_index'),
+    path('rent/createRent/', rent_views.CreateView.as_view(), name='rent_create'),
+    path('rent/<int:pk>/', rent_views.DetailView.as_view(), name='rent_detail'),
+    path('rent/<int:pk>/updateRent', rent_views.UpdateView.as_view(), name='rent_update'),
 ]
