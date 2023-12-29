@@ -1,0 +1,20 @@
+{% block content %}
+  <a href="{% url 'persons:author_index' %}">Go index</a>
+  <h1>Edit a customer</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{form.first_name.label_tag}} {{form.first_name}}</br></br>
+    {{form.last_name.label_tag}} {{form.last_name}}</br></br>
+    {{form.rnc.label_tag}} {{form.rnc}}</br></br>
+    {{form.birthday.label_tag}} {{form.birthday}}</br></br>
+    {{form.library.label_tag}} {{form.library}}</br></br>
+    <button type="submit">Update</button>
+  </form>
+{% endblock %}
+
+{% if form.errors %}
+  <div class="error">
+    <p>Please correct the following errors:</p>
+    {{ form.errors }}
+  </div>
+{% endif %}

@@ -1,0 +1,8 @@
+<a href="{% url 'persons:customer_index' %}">Go back</a>
+
+<h1>{{ customer}}</h1>
+<p>RNC: {{ customer.rnc }}</p>
+<p>Age: {{ customer.age }}</p>
+<p>Library: {{ customer.library }}</p>
+
+<a href="{% url 'persons:customer_update' customer.id %}">edit</a>

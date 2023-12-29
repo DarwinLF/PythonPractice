@@ -1,0 +1,29 @@
+<a href="{% url 'persons:person_index' %}">Go back</a>
+<a href="{% url 'persons:customer_create' %}">Add new customer</a>
+
+{% if customer_list %}
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>RNC</th>
+            <th>Age</th>
+            <th>Library</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for customer in customer_list %}
+            <tr>
+                <td>{{customer.first_name}}</td>
+                <td>{{customer.last_name}}</td>
+                <td>{{customer.rnc}}</td>
+                <td>{{customer.age}}</td>
+                <td>{{customer.library}}</td>
+                <td><a href="{% url 'persons:customer_detail' customer.id %}">Detail</a></td>
+                <td><a href="{% url 'persons:customer_update' customer.id %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No customers are available.</p>
+{% endif %}
