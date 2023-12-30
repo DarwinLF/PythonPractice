@@ -10,7 +10,11 @@ class RentForm(forms.ModelForm):
         fields = ['book', 'customer', 'employee', 'library',
                    'due_date']
         widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'book': forms.Select(attrs={'class': 'form-control'}),
+            'customer': forms.Select(attrs={'class': 'form-control'}),
+            'employee': forms.Select(attrs={'class': 'form-control'}),
+            'library': forms.Select(attrs={'class': 'form-control'}),
+            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
     def clean(self):

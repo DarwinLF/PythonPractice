@@ -1,24 +1,34 @@
-{% block content %}
-  <a href="{% url 'libraries:book_index' %}">Go back</a>
-  <h1>Create a new book</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{form.title.label_tag}} {{form.title}}</br></br>
-    {{form.published_date.label_tag}} {{form.published_date}}</br></br>
-    {{form.isbn.label_tag}} {{form.isbn}}</br></br>
-    {{form.quantity.label_tag}} {{form.quantity}}</br></br>
-    {{form.rent_price.label_tag}} {{form.rent_price}}</br></br>
-    {{form.sale_price.label_tag}} {{form.sale_price}}</br></br>
-    {{form.author.label_tag}} {{form.author}}</br></br>
-    {{form.library.label_tag}} {{form.library}}</br></br>
-    {{form.status.label_tag}} {{form.status}}</br></br>
-    <button type="submit">Save</button>
-  </form>
-{% endblock %}
+{% extends 'main/create_form.html' %}
 
-{% if form.errors %}
-  <div class="error">
-    <p>Please correct the following errors:</p>
-    {{ form.errors }}
+{% block back_link %}{% url 'libraries:book_index' %}{% endblock %}
+{% block model%}book{% endblock %}
+
+{% block form_fiels%}
+  <div class="form-group">
+    {{form.title.label_tag}} {{form.title}}
   </div>
-{% endif %}
+  <div class="form-group">
+    {{form.published_date.label_tag}} {{form.published_date}}
+  </div>
+  <div class="form-group">
+    {{form.isbn.label_tag}} {{form.isbn}}
+  </div>
+  <div class="form-group">
+    {{form.quantity.label_tag}} {{form.quantity}}
+  </div>
+  <div class="form-group">
+    {{form.rent_price.label_tag}} {{form.rent_price}}
+  </div>
+  <div class="form-group">
+    {{form.sale_price.label_tag}} {{form.sale_price}}
+  </div>
+  <div class="form-group">
+    {{form.author.label_tag}} {{form.author}}
+  </div>
+  <div class="form-group">
+    {{form.library.label_tag}} {{form.library}}
+  </div>
+  <div class="form-group">
+    {{form.status.label_tag}} {{form.status}}
+  </div>
+{% endblock %}

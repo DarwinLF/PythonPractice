@@ -8,6 +8,11 @@ class LibraryForm(forms.ModelForm):
     class Meta:
         model = Library
         fields = ['name', 'location', 'rnc']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'rnc': forms.TextInput(attrs={'class': 'form-control'})
+        }
 
     # def as_p(self):
     #     return self._html_output(

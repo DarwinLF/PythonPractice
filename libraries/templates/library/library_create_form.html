@@ -1,18 +1,16 @@
-{% block content %}
-  <a href="{% url 'libraries:library_index' %}">Go back</a>
-  <h1>Create a new library</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{form.name.label_tag}} {{form.name}}</br></br>
-    {{form.location.label_tag}} {{form.location}}</br></br>
-    {{form.rnc.label_tag}} {{form.rnc}}</br></br>
-    <button type="submit">Save</button>
-  </form>
-{% endblock %}
+{% extends 'main/create_form.html' %}
 
-{% if form.errors %}
-  <div class="error">
-    <p>Please correct the following errors:</p>
-    {{ form.errors }}
+{% block back_link %}{% url 'libraries:library_index' %}{% endblock %}
+{% block model%}library{% endblock %}
+
+{% block form_fiels%}
+  <div class="form-group">
+    {{form.name.label_tag}} {{form.name}}
   </div>
-{% endif %}
+  <div class="form-group">
+    {{form.location.label_tag}} {{form.location}}
+  </div>
+  <div class="form-group">
+    {{form.rnc.label_tag}} {{form.rnc}}
+  </div>
+{% endblock %}

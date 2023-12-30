@@ -1,8 +1,4 @@
-{% block content %}
-  <a href="{% url 'main' %}">Go back</a>
-  <h1>Libraries:</h1>
-  
-  <h3><a href="library/">Library</a></h3>
-  <h3><a href="book/">Book</a></h3>
-  <h3><a href="rent/">Rent</a></h3>
-{% endblock %}
+{% extends 'main/links.html' %}
+
+{% block back_link%}<a href="{% url 'main' %}">Go back</a>{% endblock %}
+{% block header%}Libraries{% endblock %}

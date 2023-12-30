@@ -10,7 +10,11 @@ class PersonForm(forms.ModelForm):
         model = Person
         fields = ['first_name', 'last_name', 'rnc', 'birthday']
         widgets = {
-            'birthday': forms.DateInput(attrs={'type': 'date'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'rnc': forms.TextInput(attrs={'class': 'form-control'}),
+            'birthday': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            
         }
 
     def as_p(self):

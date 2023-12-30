@@ -1,23 +1,26 @@
-{% block content %}
-  <a href="{% url 'persons:author_index' %}">Go back</a>
-  <h1>Create a new author</h1>
-  {% comment %} {% if person %}
-    <h2>The last person created was {{person}} with age: {{person.age}}</h2>
-  {% endif %} {% endcomment %}
-  <form method="post">
-    {% csrf_token %}
-    {{form.first_name.label_tag}} {{form.first_name}}</br></br>
-    {{form.last_name.label_tag}} {{form.last_name}}</br></br>
-    {{form.alias.label_tag}} {{form.alias}}</br></br>
-    {{form.rnc.label_tag}} {{form.rnc}}</br></br>
-    {{form.birthday.label_tag}} {{form.birthday}}</br></br>
-    <button type="submit">Save</button>
-  </form>
-{% endblock %}
+{% extends 'main/create_form.html' %}
 
-{% if form.errors %}
-  <div class="error">
-    <p>Please correct the following errors:</p>
-    {{ form.errors }}
+{% block back_link %}{% url 'persons:author_index' %}{% endblock %}
+{% block model%}author{% endblock %}
+
+{% comment %} {% if person %}
+  <h2>The last person created was {{person}} with age: {{person.age}}</h2>
+{% endif %} {% endcomment %}
+
+{% block form_fiels%}
+  <div class="form-group">
+    {{form.first_name.label_tag}} {{form.first_name}}
   </div>
-{% endif %}
+  <div class="form-group">
+    {{form.last_name.label_tag}} {{form.last_name}}
+  </div>
+  <div class="form-group">
+    {{form.alias.label_tag}} {{form.alias}}
+  </div>
+  <div class="form-group">
+    {{form.rnc.label_tag}} {{form.rnc}}
+  </div>
+  <div class="form-group">
+    {{form.birthday.label_tag}} {{form.birthday}}
+  </div>
+{% endblock %}

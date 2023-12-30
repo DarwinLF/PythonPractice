@@ -10,7 +10,15 @@ class BookForm(forms.ModelForm):
         fields = ['title', 'published_date', 'isbn', 'quantity',
                    'rent_price', 'sale_price', 'author', 'library', 'status']
         widgets = {
-            'published_date': forms.DateInput(attrs={'type': 'date'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'published_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'isbn': forms.TextInput(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'rent_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'sale_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'author': forms.Select(attrs={'class': 'form-control'}),
+            'library': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

@@ -1,8 +1,10 @@
-{% block content %}
-  <a href="{% url 'main' %}">Go back</a>
-  <h1>Persons:</h1>
-  
-  <h3><a href="author/">Author</a></h3>
-  <h3><a href="customer/">Customer</a></h3>
-  <h3><a href="employee/">Employee</a></h3>
-{% endblock %}
+{% extends 'main/links.html' %}
+
+{% block back_link%}<a href="{% url 'main' %}">Go back</a>{% endblock %}
+{% block header%}Persons{% endblock %}
+
+{% block links%}
+  <li class="list-group-item bg-dark border-light"><a href="author/">Author</a></li>
+  <li class="list-group-item bg-dark border-light"><a href="customer/">Customer</a></li>
+  <li class="list-group-item bg-dark border-light"><a href="employee/">Employee</a></li>
+{%endblock%}
