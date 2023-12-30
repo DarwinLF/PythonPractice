@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Model List{% endblock %}
+
+{% block content %}
+    <div class='container mt-5'>
+        <a href="{% block back_link %}{% url 'main' %}{% endblock %}">Go back</a>
+        <h1 class='mb-4'>{% block name_list%}Model{% endblock %} List</h1>
+        <a href="{% block create_link %}{% url 'main' %}{% endblock %}">Create new {% block model_name%}model{% endblock%}</a>
+        {% if model_list %}
+            <table class='table table-striped table-dark'>
+                <thead>
+                    <tr>
+                        {% block table_headers %}{% endblock %}
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in model_list %}
+                        <tr>
+                            {% block table_fields%}{% endblock %}
+                            <td><a href="{% block detail_link %}{% url 'main'%}{% endblock %}">Detail</a></td>
+                            <td><a href="{% block edit_link %}{% url 'main'%}{% endblock %}">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No {% block no_list %}models{% endblock %} are available.</p>
+        {% endif %}
+    </div>
+    
+{% endblock %}

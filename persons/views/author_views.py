@@ -9,7 +9,7 @@ from ..forms.author_forms import AuthorForm
 
 class IndexView(generic.ListView):
     template_name = 'author/author_index.html'
-    context_object_name = 'author_list'
+    context_object_name = 'model_list'
 
     def get_queryset(self):
         return Author.objects.all()

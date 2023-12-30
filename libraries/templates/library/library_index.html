@@ -1,25 +1,23 @@
-<a href="{% url 'libraries:libraries_index' %}">Go back</a>
-<a href="{% url 'libraries:library_create' %}">Create new library</a>
+{% extends 'main/index.html' %}
 
-{% if library_list %}
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>RNC</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for library in library_list %}
-            <tr>
-                <td>{{library.name}}</td>
-                <td>{{library.location}}</td>
-                <td>{{library.rnc}}</td>
-                <td><a href="{% url 'libraries:library_detail' library.id %}">Detail</a></td>
-                <td><a href="{% url 'libraries:library_update' library.id %}">Edit</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>No libraries are available.</p>
-{% endif %}
+{% block back_link %}{% url 'libraries:libraries_index' %}{% endblock %}
+{% block name_list%}Library{% endblock %}
+{% block create_link %}{% url 'libraries:library_create' %}{% endblock %}
+{% block model_name%}library{% endblock%}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Location</th>
+    <th>RNC</th>
+{% endblock %}
+
+{% block table_fields%}
+    <td>{{item.name}}</td>
+    <td>{{item.location}}</td>
+    <td>{{item.rnc}}</td>
+{% endblock %}
+
+{% block detail_link %}{% url 'libraries:library_detail' item.id%}{% endblock %}
+{% block edit_link %}{% url 'libraries:library_update' item.id%}{% endblock %}
+
+{% block no_list %}libraries{% endblock %}

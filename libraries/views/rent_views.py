@@ -9,7 +9,7 @@ from ..forms.rent_forms import RentForm
 
 class IndexView(generic.ListView):
     template_name = 'rent/rent_index.html'
-    context_object_name = 'rent_list'
+    context_object_name = 'model_list'
 
     def get_queryset(self):
         return Rent.objects.all()

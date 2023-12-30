@@ -9,7 +9,7 @@ from ..forms.customer_forms import CustomerForm
 
 class IndexView(generic.ListView):
     template_name = 'customer/customer_index.html'
-    context_object_name = 'customer_list'
+    context_object_name = 'model_list'
 
     def get_queryset(self):
         return Customer.objects.all()

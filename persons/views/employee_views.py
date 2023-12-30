@@ -9,7 +9,7 @@ from ..forms.employee_forms import EmployeeForm
 
 class IndexView(generic.ListView):
     template_name = 'employee/employee_index.html'
-    context_object_name = 'employee_list'
+    context_object_name = 'model_list'
 
     def get_queryset(self):
         return Employee.objects.all()

@@ -9,7 +9,7 @@ from ..forms.library_forms import LibraryForm
 
 class IndexView(generic.ListView):
     template_name = 'library/library_index.html'
-    context_object_name = 'library_list'
+    context_object_name = 'model_list'
 
     def get_queryset(self):
         return Library.objects.all()

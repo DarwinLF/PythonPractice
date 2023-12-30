@@ -1,0 +1,19 @@
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+
+body {
+    background-color: #1a1a1a; /* Dark background color */
+    color: #ffffff; /* Light text color */
+}
+
+.container {
+    background-color: #2d2d2d; /* Dark container background color */
+    color: #ffffff; /* Light text color inside the container */
+}
+
+a {
+    color: #4e8cff; /* Link color in dark mode */
+}
+
+a:hover {
+    color: #2a5da7; /* Link color on hover in dark mode */
+}

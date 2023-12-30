@@ -1,31 +1,29 @@
-<a href="{% url 'libraries:libraries_index' %}">Go back</a>
-<a href="{% url 'libraries:book_create' %}">Create new book</a>
+{% extends 'main/index.html' %}
 
-{% if book_list %}
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Published Date</th>
-            <th>Quantity</th>
-            <th>Author</th>
-            <th>Library</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for book in book_list %}
-            <tr>
-                <td>{{book.title}}</td>
-                <td>{{book.published_date}}</td>
-                <td>{{book.quantity}}</td>
-                <td>{{book.author}}</td>
-                <td>{{book.library}}</td>
-                <td>{{book.status}}</td>
-                <td><a href="{% url 'libraries:book_detail' book.id %}">Detail</a></td>
-                <td><a href="{% url 'libraries:book_update' book.id %}">Edit</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>No books are available.</p>
-{% endif %}
+{% block back_link %}{% url 'libraries:libraries_index' %}{% endblock %}
+{% block name_list%}Book{% endblock %}
+{% block create_link %}{% url 'libraries:book_create' %}{% endblock %}
+{% block model_name%}book{% endblock%}
+
+{% block table_headers %}
+    <th>Title</th>
+    <th>Published Date</th>
+    <th>Quantity</th>
+    <th>Author</th>
+    <th>Library</th>
+    <th>Status</th>
+{% endblock %}
+
+{% block table_fields%}
+    <td>{{item.title}}</td>
+    <td>{{item.published_date}}</td>
+    <td>{{item.quantity}}</td>
+    <td>{{item.author}}</td>
+    <td>{{item.library}}</td>
+    <td>{{item.status}}</td>
+{% endblock %}
+
+{% block detail_link %}{% url 'libraries:book_detail' item.id%}{% endblock %}
+{% block edit_link %}{% url 'libraries:book_update' item.id%}{% endblock %}
+
+{% block no_list %}books{% endblock %}

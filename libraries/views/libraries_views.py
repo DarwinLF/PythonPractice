@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def LibrariesLinks(request):
-    return render(request, 'libraries/libraries_index.html')
+    return render(request, 'libraries/libraries_links.html')

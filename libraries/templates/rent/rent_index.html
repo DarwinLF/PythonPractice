@@ -1,31 +1,29 @@
-<a href="{% url 'libraries:libraries_index' %}">Go back</a>
-<a href="{% url 'libraries:rent_create' %}">Create new rent</a>
+{% extends 'main/index.html' %}
 
-{% if rent_list %}
-    <table>
-        <tr>
-            <th>Book</th>
-            <th>Customer</th>
-            <th>Employee</th>
-            <th>Library</th>
-            <th>Rent Date</th>
-            <th>Due Date</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for rent in rent_list %}
-            <tr>
-                <td>{{rent.book}}</td>
-                <td>{{rent.customer}}</td>
-                <td>{{rent.employee}}</td>
-                <td>{{rent.library}}</td>
-                <td>{{rent.rent_date}}</td>
-                <td>{{rent.due_date}}</td>
-                <td><a href="{% url 'libraries:rent_detail' rent.id %}">Detail</a></td>
-                <td><a href="{% url 'libraries:rent_update' rent.id %}">Edit</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>No rents are available.</p>
-{% endif %}
+{% block back_link %}{% url 'libraries:libraries_index' %}{% endblock %}
+{% block name_list%}Rent{% endblock %}
+{% block create_link %}{% url 'libraries:rent_create' %}{% endblock %}
+{% block model_name%}rent{% endblock%}
+
+{% block table_headers %}
+    <th>Book</th>
+    <th>Customer</th>
+    <th>Employee</th>
+    <th>Library</th>
+    <th>Rent Date</th>
+    <th>Due Date</th>
+{% endblock %}
+
+{% block table_fields%}
+    <td>{{item.book}}</td>
+    <td>{{item.customer}}</td>
+    <td>{{item.employee}}</td>
+    <td>{{item.library}}</td>
+    <td>{{item.rent_date}}</td>
+    <td>{{item.due_date}}</td>
+{% endblock %}
+
+{% block detail_link %}{% url 'libraries:rent_detail' item.id%}{% endblock %}
+{% block edit_link %}{% url 'libraries:rent_update' item.id%}{% endblock %}
+
+{% block no_list %}rents{% endblock %}

@@ -1,29 +1,27 @@
-<a href="{% url 'persons:person_index' %}">Go back</a>
-<a href="{% url 'persons:author_create' %}">Add new author</a>
+{% extends 'main/index.html' %}
 
-{% if author_list %}
-    <table>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>RNC</th>
-            <th>Age</th>
-            <th>Alias</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for author in author_list %}
-            <tr>
-                <td>{{author.first_name}}</td>
-                <td>{{author.last_name}}</td>
-                <td>{{author.rnc}}</td>
-                <td>{{author.age}}</td>
-                <td>{{author.alias}}</td>
-                <td><a href="{% url 'persons:author_detail' author.id %}">Detail</a></td>
-                <td><a href="{% url 'persons:author_update' author.id %}">Edit</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>No authors are available.</p>
-{% endif %}
+{% block back_link %}{% url 'persons:person_index' %}{% endblock %}
+{% block name_list%}Author{% endblock %}
+{% block create_link %}{% url 'persons:author_create' %}{% endblock %}
+{% block model_name%}author{% endblock%}
+
+{% block table_headers %}
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Alias</th>
+    <th>RNC</th>
+    <th>Age</th>
+{% endblock %}
+
+{% block table_fields%}
+    <td>{{item.first_name}}</td>
+    <td>{{item.last_name}}</td>
+    <td>{{item.alias}}</td>
+    <td>{{item.rnc}}</td>
+    <td>{{item.age}}</td>
+{% endblock %}
+
+{% block detail_link %}{% url 'persons:author_detail' item.id%}{% endblock %}
+{% block edit_link %}{% url 'persons:author_update' item.id%}{% endblock %}
+
+{% block no_list %}authors{% endblock %}
