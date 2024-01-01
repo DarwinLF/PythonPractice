@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <a href="{% block index_link %}{% url 'main' %}{% endblock %}">Go index</a>
+  <h1>Edit a {% block model%}model{% endblock %}</h1>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {% block form_fiels%}{% endblock %}
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+
+  {% if form.errors %}
+    <div class="error">
+        <p>Please correct the following errors:</p>
+        {{ form.errors }}
+    </div>
+  {% endif %}
+{% endblock %}
