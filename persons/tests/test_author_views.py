@@ -64,11 +64,12 @@ class CreateViewTests(TestCase):
         data = create_author('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), 'Esnaire')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'author/author_index.html')
         self.assertEqual(Author.objects.count(), 1)
         self.assertTrue(Author.objects.filter(first_name='Darwin').exists())
 
         # Test POST request 2
-        data = data = create_author('Jackson', 'Jonson', '402-30709608', date(1999, 2, 12), 'Jack')
+        data = create_author('Jackson', 'Jonson', '402-3070960-8', date(1999, 2, 12), 'Jack')
         with transaction.atomic():
             response = self.client.post(self.url, data, follow=True)
             self.assertEqual(response.status_code, 200)
@@ -127,3 +128,16 @@ class UpdateViewTests(TestCase):
         self.assertEqual(self.author2.rnc, '40230709609')
         self.assertEqual(self.author2.birthday, date(2000, 4, 20))
         self.assertEqual(self.author2.alias, 'Karate')
+
+class DetailViewTests(TestCase):
+    def setUp(self):
+        self.author = Author.objects.create(first_name='Darwin', last_name='Lantigua', rnc='402-3070960-8', birthday=date(2000, 1, 8), alias='Esnaire')
+        self.url = reverse('persons:author_detail', args=[self.author.pk])
+        self.client = Client()
+    
+    def test_get_view(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'author/author_detail.html')
+        self.assertEqual(response.context['model'], self.author)
