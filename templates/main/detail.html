@@ -9,5 +9,7 @@
         </div>
     </div>
 
-    <a href="{% block edit_link %}{% url 'main' %}{% endblock %}">edit</a>
+    <div class="container mt-3 text-center">
+        <a class="btn btn-primary mt-2" href="{% block edit_link %}{% url 'main' %}{% endblock %}">edit</a>
+    </div>
 {% endblock %}

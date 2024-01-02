@@ -5,7 +5,9 @@
   <form method="post" class="form">
     {% csrf_token %}
     {% block form_fiels%}{% endblock %}
-    <button type="submit" class="btn btn-primary">Update</button>
+    <div class="container mt-3 text-center">
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
   </form>
 
   {% if form.errors %}
