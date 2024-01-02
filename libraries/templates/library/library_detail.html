@@ -1,25 +1,26 @@
-<a href="{% url 'libraries:library_index' %}">Go back</a>
+{% extends 'main/detail.html' %}
 
-<h1>{{ library }}</h1>
-<p>Location: {{ library.location }}</p>
-<p>RNC: {{ library.rnc }}</p>
-<h3>Books:</h3>
-<ul>
-    {% for book in library.books.all %}
-        <li><a href="{% url 'libraries:book_detail' book.id %}">{{book}}</a></li>
-    {% endfor %}
-</ul>
-<h3>Employees:</h3>
-<ul>
-    {% for employee in library.employees.all %}
-        <li><a href="{% url 'persons:employee_detail' employee.id %}">{{employee}}</a></li>
-    {% endfor %}
-</ul>
-<h3>Customers:</h3>
-<ul>
-    {% for customer in library.customers.all %}
-        <li><a href="{% url 'persons:customer_detail' customer.id %}">{{customer}}</a></li>
-    {% endfor %}
-</ul>
+{% block back_link %}{% url 'libraries:library_index' %}{% endblock %}
 
-<a href="{% url 'libraries:library_update' library.id %}">edit</a>
+{% block extra_fields %}
+    <p class="card-text">Location: {{ model.location }}</p>
+    <p class="card-text">RNC: {{ model.rnc }}</p>
+    <h5 class="card-subtitle mb-2 mt-4">Books:</h5>
+    <ul class="list-group bg-dark border-light">
+        {% for item in model.books.all %}
+            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'libraries:book_detail' item.id %}">{{item}}</a>
+        {% endfor %}
+    </ul>
+    <h5 class="card-subtitle mb-2 mt-4">Employees:</h5>
+    <ul class="list-group bg-dark border-light">
+        {% for item in model.employees.all %}
+            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'persons:employee_detail' item.id %}">{{item}}</a>
+        {% endfor %}
+    </ul>
+    <h5 class="card-subtitle mb-2 mt-4">Customers:</h5>
+    <ul class="list-group bg-dark border-light">
+        {% for item in model.customers.all %}
+            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'persons:customer_detail' item.id %}">{{item}}</a>
+        {% endfor %}
+    </ul>
+{% endblock %}

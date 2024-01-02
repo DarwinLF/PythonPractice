@@ -1,9 +1,12 @@
-<a href="{% url 'libraries:rent_index' %}">Go back</a>
+{% extends 'main/detail.html' %}
 
-<h1>{{ rent }}</h1>
-<p>Book: <a href="{% url 'libraries:book_detail' rent.book.id %}">{{ rent.book }}</a></p>
-<p>Employee: <a href="{% url 'persons:employee_detail' rent.employee.id %}">{{ rent.employee }}</a></p>
-<p>Library: <a href="{% url 'libraries:library_detail' rent.library.id %}">{{ rent.library }}</a></p>
-<p>Rent Date: {{ rent.rent_date }}</p>
+{% block back_link %}{% url 'libraries:rent_index' %}{% endblock %}
 
-<a href="{% url 'libraries:rent_update' rent.id %}">edit</a>
+{% block extra_fields %}
+    <p class="card-text">Book: <a href="{% url 'libraries:book_detail' model.book.id%}">{{ model.book }}</a></p>
+    <p class="card-text">Employee: <a href="{% url 'persons:employee_detail' model.employee.id%}">{{ model.employee }}</a></p>
+    <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
+    <p class="card-text">Rent Date: {{ model.rent_date }}</p>
+{% endblock %}
+
+{% block edit_link %}{% url 'libraries:rent_update' model.id %}{% endblock %}

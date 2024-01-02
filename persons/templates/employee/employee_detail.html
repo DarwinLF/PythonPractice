@@ -1,8 +1,11 @@
-<a href="{% url 'persons:employee_index' %}">Go back</a>
+{% extends 'main/detail.html' %}
 
-<h1>{{ employee }}</h1>
-<p>RNC: {{ employee.rnc }}</p>
-<p>Age: {{ employee.age }}</p>
-<p>Library: {{ employee.library }}</p>
+{% block back_link %}{% url 'persons:employee_index' %}{% endblock %}
 
-<a href="{% url 'persons:employee_update' employee.id %}">edit</a>
+{% block extra_fields %}
+    <p class="card-text">RNC: {{ model.rnc }}</p>
+    <p class="card-text">Age: {{ model.age }}</p>
+    <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
+{% endblock %}
+
+{% block edit_link %}{% url 'persons:employee_update' model.id %}{% endblock %}

@@ -1,13 +1,16 @@
-<a href="{% url 'libraries:book_index' %}">Go back</a>
+{% extends 'main/detail.html' %}
 
-<h1>{{ book }}</h1>
-<p>Author: <a href="{% url 'persons:author_detail' book.author.id%}">{{ book.author }}</a></p>
-<p>Library: {{ book.library }}</p>
-<p>Published Date: {{ book.published_date }}</p>
-<p>ISBN: {{ book.isbn }}</p>
-<p>Quantity: {{ book.quantity }}</p>
-<p>Rent Price: {{ book.rent_price }}</p>
-<p>Sale Price: {{ book.sale_price }}</p>
-<p>Status: {{ book.status }}</p>
+{% block back_link %}{% url 'libraries:book_index' %}{% endblock %}
 
-<a href="{% url 'libraries:book_update' book.id %}">edit</a>
+{% block extra_fields %}
+    <p class="card-text">Author: <a href="{% url 'persons:author_detail' model.author.id%}">{{ model.author }}</a></p>
+    <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
+    <p class="card-text">Published Date: {{ model.published_date }}</p>
+    <p class="card-text">ISBN: {{ model.isbn }}</p>
+    <p class="card-text">Quantity: {{ model.quantity }}</p>
+    <p class="card-text">Rent Price: {{ model.rent_price }}</p>
+    <p class="card-text">Sale Price: {{ model.sale_price }}</p>
+    <p class="card-text">Status: {{ model.status }}</p>
+{% endblock %}
+
+{% block edit_link %}{% url 'libraries:book_update' model.id %}{% endblock %}

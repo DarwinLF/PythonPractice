@@ -55,4 +55,4 @@ class UpdateView(generic.UpdateView):
 class DetailView(generic.DetailView):
     model = Author
     template_name = 'author/author_detail.html'
-    context_object_name = 'author'
+    context_object_name = 'model'

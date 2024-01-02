@@ -48,4 +48,4 @@ class UpdateView(generic.UpdateView):
 class DetailView(generic.DetailView):
     model = Employee
     template_name = 'employee/employee_detail.html'
-    context_object_name = 'employee'
+    context_object_name = 'model'

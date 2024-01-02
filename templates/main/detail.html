@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <a href="{% block back_link %}{% url 'main' %}{% endblock %}">Go back</a>
+
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h2 class="card-title">{{ model }}</h2>
+            {% block extra_fields %}{% endblock %}
+        </div>
+    </div>
+
+    <a href="{% block edit_link %}{% url 'main' %}{% endblock %}">edit</a>
+{% endblock %}
