@@ -1,7 +1,5 @@
 {% extends 'main/detail.html' %}
 
-{% block back_link %}{% url 'persons:customer_index' %}{% endblock %}
-
 {% block extra_fields %}
     <p class="card-text">RNC: {{ model.rnc }}</p>
     <p class="card-text">Age: {{ model.age }}</p>

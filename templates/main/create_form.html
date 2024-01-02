@@ -1,7 +1,6 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-  <a href="{% block back_link %}{% url 'libraries:library_index' %}{% endblock %}">Go back</a>
   <h1>Create a new {% block model%}model{% endblock %}</h1>
   <form method="post" class="form">
     {% csrf_token %}

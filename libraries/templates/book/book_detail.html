@@ -1,7 +1,5 @@
 {% extends 'main/detail.html' %}
 
-{% block back_link %}{% url 'libraries:book_index' %}{% endblock %}
-
 {% block extra_fields %}
     <p class="card-text">Author: <a href="{% url 'persons:author_detail' model.author.id%}">{{ model.author }}</a></p>
     <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>

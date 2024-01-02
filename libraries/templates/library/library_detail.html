@@ -1,7 +1,5 @@
 {% extends 'main/detail.html' %}
 
-{% block back_link %}{% url 'libraries:library_index' %}{% endblock %}
-
 {% block extra_fields %}
     <p class="card-text">Location: {{ model.location }}</p>
     <p class="card-text">RNC: {{ model.rnc }}</p>

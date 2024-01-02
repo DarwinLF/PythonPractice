@@ -1,7 +1,6 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <a href="{% block back_link %}{% url 'main' %}{% endblock %}">Go back</a>
     <h1 class='mb-4'>{% block name_list%}Model{% endblock %} List</h1>
     <a href="{% block create_link %}{% url 'main' %}{% endblock %}">Create new {% block model_name%}model{% endblock%}</a>
     {% if model_list %}

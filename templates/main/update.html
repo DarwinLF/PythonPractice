@@ -1,7 +1,6 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-  <a href="{% block index_link %}{% url 'main' %}{% endblock %}">Go index</a>
   <h1>Edit a {% block model%}model{% endblock %}</h1>
   <form method="post" class="form">
     {% csrf_token %}
