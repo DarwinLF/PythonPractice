@@ -65,12 +65,12 @@ class CreateViewTests(TestCase):
         self.assertEqual(customer_created.rnc, '40230709608')
 
     def test_duplicate_rnc(self):
-        self.customer = Customer.objects.create(first_name = 'Darwin',
-                                             last_name = 'Lantigua',
-                                             rnc = '402-3070960-8',
-                                             birthday = date(2000, 1, 8),
-                                             library = self.library
-                                             )
+        customer = Customer.objects.create(first_name = 'Darwin',
+                                           last_name = 'Lantigua',
+                                           rnc = '402-3070960-8',
+                                           birthday = date(2000, 1, 8),
+                                           library = self.library
+                                           )
 
         data = create_customer('Jackson', 'Jonson', '402-30709608', date(1999, 2, 12), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
@@ -92,6 +92,36 @@ class CreateViewTests(TestCase):
         data = create_customer('Darwin', 'Lantigua', '402-307060-8', date(2050, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertFormError(response, 'form', 'birthday', 'The birthday can\'t be in the future')
+
+    def test_same_customer_same_library(self):
+        customer = Customer.objects.create(first_name = 'Darwin',
+                                           last_name = 'Lantigua',
+                                           rnc = '402-3070960-8',
+                                           birthday = date(2000, 1, 8),
+                                           library = self.library
+                                           )
+        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), self.library.pk)
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer/customer_create_form.html')
+        self.assertEqual(Customer.objects.count(), 1)
+
+    def test_same_customer_different_library(self):
+        customer = Customer.objects.create(first_name = 'Darwin',
+                                           last_name = 'Lantigua',
+                                           rnc = '402-3070960-8',
+                                           birthday = date(2000, 1, 8),
+                                           library = self.library
+                                           )
+        library2 = Library.objects.create(name = 'libreria2',
+                                          location = 'Salcedo',
+                                          rnc = '123-1234567-2')
+        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), library2.pk)
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer/customer_index.html')
+        self.assertEqual(Customer.objects.count(), 2)
+    
 
 class UpdateViewTests(TestCase):
     def setUp(self):

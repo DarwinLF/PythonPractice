@@ -16,7 +16,6 @@ class CustomerForm(PersonForm):
         data = super().clean()
         rnc = data['rnc']
         library = data['library']
-
         instance_pk = self.instance.pk if self.instance else None
 
         if Customer.objects.filter(rnc=rnc, library=library).exclude(pk=instance_pk).exists():
