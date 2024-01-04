@@ -9,6 +9,7 @@
     <p class="card-text">Rent Price: {{ model.rent_price }}</p>
     <p class="card-text">Sale Price: {{ model.sale_price }}</p>
     <p class="card-text">Status: {{ model.status }}</p>
+    <p class="card-text">Available: {{ model.available }}</p>
 {% endblock %}
 
 {% block edit_link %}{% url 'libraries:book_update' model.id %}{% endblock %}

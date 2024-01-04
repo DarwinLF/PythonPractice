@@ -21,3 +21,11 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         self.isbn = self.isbn.replace('-', '')
         super().save(*args, **kwargs)
+
+    @property
+    def rented(self):
+        return sum([x.amount_to_rent for x in self.library.rents.all()])
+    
+    @property
+    def available(self):
+        return self.quantity - self.rented

@@ -6,7 +6,7 @@ from datetime import date
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=150)
-    rnc = models.CharField(max_length=13, unique=True)
+    rnc = models.CharField(max_length=13)
     birthday = models.DateField()
 
     def __str__(self):

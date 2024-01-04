@@ -44,5 +44,7 @@ class PersonForm(forms.ModelForm):
 
         if birthday > timezone.now().date():
             self.add_error('birthday', 'The birthday can\'t be in the future')
+
+        data['rnc'] = rnc.replace('-', '')
         
         return data

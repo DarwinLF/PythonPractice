@@ -37,6 +37,7 @@ class UpdateView(generic.UpdateView):
     success_url = reverse_lazy('libraries:library_index')
 
     def form_valid(self, form):
+        # self.kwargs.get('pk')
         try:
             super().form_valid(form)
         except IntegrityError as e:

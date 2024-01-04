@@ -59,32 +59,26 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
-        try:
-            self.assertEqual(Customer.objects.count(), 1)
-            customer_created = Customer.objects.get(first_name = 'Darwin')
-            self.assertEqual(customer_created.last_name, 'Lantigua')
-            self.assertEqual(customer_created.rnc, '40230709608')
-        except Customer.DoesNotExist:
-            self.fail('Customer.DoesNotExist: The customer you just created does not exist in the database.')
+        self.assertEqual(Customer.objects.count(), 1)
+        customer_created = Customer.objects.get(first_name = 'Darwin')
+        self.assertEqual(customer_created.last_name, 'Lantigua')
+        self.assertEqual(customer_created.rnc, '40230709608')
 
-    # def test_duplicate_rnc(self):
-    #     # Test POST request 1
-    #     data = create_customer('Darwin', 'Lantigua', '402-3070960-7', date(2000, 1, 8), self.library.pk)
-    #     response = self.client.post(self.url, data, follow=True)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'customer/customer_index.html')
-    #     self.assertEqual(Customer.objects.count(), 1)
-    #     self.assertTrue(Customer.objects.filter(first_name='Darwin').exists())
+    def test_duplicate_rnc(self):
+        self.customer = Customer.objects.create(first_name = 'Darwin',
+                                             last_name = 'Lantigua',
+                                             rnc = '402-3070960-8',
+                                             birthday = date(2000, 1, 8),
+                                             library = self.library
+                                             )
 
-    #     # Test POST request 2
-    #     data = create_customer('Jackson', 'Jonson', '402-30709607', date(1999, 2, 12), self.library.pk)
-    #     with transaction.atomic():
-    #         response = self.client.post(self.url, data, follow=True)
-    #         self.assertEqual(response.status_code, 200)
-    #         self.assertTemplateUsed(response, 'customer/customer_create_form.html')
+        data = create_customer('Jackson', 'Jonson', '402-30709608', date(1999, 2, 12), self.library.pk)
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer/customer_create_form.html')
 
-    #     self.assertEqual(Customer.objects.count(), 1)
-    #     self.assertFalse(Customer.objects.filter(first_name='Jackson').exists())
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertFalse(Customer.objects.filter(first_name='Jackson').exists())
 
     def test_invalid_rnc(self):
         data = create_customer('Darwin', 'Lantigua', '402-307060-8', date(2000, 1, 8), self.library.pk)
@@ -121,10 +115,9 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        with transaction.atomic():
-            updated_data = create_customer(self.customer2.first_name, self.customer2.last_name, self.customer1.rnc, self.customer2.birthday, self.customer2.library)
-            response = self.client.post(self.url, updated_data, follow=True)
-            self.assertEqual(response.status_code, 200)
+        updated_data = create_customer(self.customer2.first_name, self.customer2.last_name, self.customer1.rnc, self.customer2.birthday, self.customer2.library.pk)
+        response = self.client.post(self.url, updated_data, follow=True)
+        self.assertEqual(response.status_code, 200)
 
         # Refresh the person from the database
         self.customer2.refresh_from_db()

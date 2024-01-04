@@ -21,14 +21,14 @@ class CreateView(generic.CreateView):
     template_name = 'customer/customer_create_form.html'
     success_url = reverse_lazy('persons:customer_index')
 
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
+    # def form_valid(self, form):
+    #     try:
+    #         super().form_valid(form)
+    #     except IntegrityError as e:
+    #         form.add_error('rnc', 'RNC already exists')
+    #         return render(self.request, self.template_name, {'form': form})
 
-        return HttpResponseRedirect(reverse('persons:customer_index'))
+    #     return HttpResponseRedirect(reverse('persons:customer_index'))
     
 class UpdateView(generic.UpdateView):
     model = Customer
@@ -36,14 +36,14 @@ class UpdateView(generic.UpdateView):
     template_name = 'customer/customer_update.html'
     success_url = reverse_lazy('persons:customer_index')
 
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
+    # def form_valid(self, form):
+    #     try:
+    #         super().form_valid(form)
+    #     except IntegrityError as e:
+    #         form.add_error('rnc', 'RNC already exists')
+    #         return render(self.request, self.template_name, {'form': form})
 
-        return HttpResponseRedirect(reverse('persons:customer_index'))
+    #     return HttpResponseRedirect(reverse('persons:customer_index'))
     
 class DetailView(generic.DetailView):
     model = Customer

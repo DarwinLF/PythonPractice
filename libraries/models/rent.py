@@ -4,6 +4,7 @@ from datetime import date
 
 class Rent(models.Model):
     book = models.ForeignKey('libraries.Book', on_delete = models.PROTECT)
+    amount_to_rent = models.IntegerField(default = 1)
     customer = models.ForeignKey('persons.Customer', 
                                  on_delete = models.PROTECT, 
                                  related_name = 'rents_due')

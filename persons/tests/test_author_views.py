@@ -51,29 +51,23 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
-        try:
-            self.assertEqual(Author.objects.count(), 1)
-            author_created = Author.objects.get(first_name = 'Darwin')
-            self.assertEqual(author_created.last_name, 'Lantigua')
-            self.assertEqual(author_created.rnc, '40230709608')
-        except Author.DoesNotExist:
-            self.fail('Author.DoesNotExist: The author you just created does not exist in the database.')
+        self.assertEqual(Author.objects.count(), 1)
+        author_created = Author.objects.get(first_name = 'Darwin')
+        self.assertEqual(author_created.last_name, 'Lantigua')
+        self.assertEqual(author_created.rnc, '40230709608')
 
     def test_duplicate_rnc(self):
-        # Test POST request 1
-        data = create_author('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), 'Esnaire')
+        self.author1 = Author.objects.create(first_name = 'Darwin',
+                                             last_name = 'Lantigua',
+                                             rnc = '402-3070960-8',
+                                             birthday = date(2000, 1, 8),
+                                             alias = 'Esnaire'
+                                             )
+
+        data = create_author('Jackson', 'Jonson', '402-3070960-8', date(1999, 2, 12), 'Jack')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'author/author_index.html')
-        self.assertEqual(Author.objects.count(), 1)
-        self.assertTrue(Author.objects.filter(first_name='Darwin').exists())
-
-        # Test POST request 2
-        data = create_author('Jackson', 'Jonson', '402-3070960-8', date(1999, 2, 12), 'Jack')
-        with transaction.atomic():
-            response = self.client.post(self.url, data, follow=True)
-            self.assertEqual(response.status_code, 200)
-            self.assertTemplateUsed(response, 'author/author_create_form.html')
+        self.assertTemplateUsed(response, 'author/author_create_form.html')
 
         self.assertEqual(Author.objects.count(), 1)
         self.assertFalse(Author.objects.filter(first_name='Jackson').exists())
@@ -106,10 +100,9 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        with transaction.atomic():
-            updated_data = create_author(self.author2.first_name, self.author2.last_name, self.author1.rnc, self.author2.birthday, self.author2.alias)
-            response = self.client.post(self.url, updated_data, follow=True)
-            self.assertEqual(response.status_code, 200)
+        updated_data = create_author(self.author2.first_name, self.author2.last_name, self.author1.rnc, self.author2.birthday, self.author2.alias)
+        response = self.client.post(self.url, updated_data, follow=True)
+        self.assertEqual(response.status_code, 200)
 
         # Refresh the person from the database
         self.author2.refresh_from_db()

@@ -10,10 +10,19 @@
     </div>
   </form>
 
-  {% if form.errors %}
+  {% comment %} {% if form.errors %}
     <div class="error">
         <p>Please correct the following errors:</p>
         {{ form.errors }}
+    </div>
+  {% endif %} {% endcomment %}
+  {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for field in form.visible_fields %}
+            {% if field.errors %}
+                {{ field.errors }}
+            {% endif %}
+        {% endfor %}
     </div>
   {% endif %}
 {% endblock %}

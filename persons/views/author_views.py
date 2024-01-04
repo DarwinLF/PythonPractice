@@ -26,31 +26,12 @@ class CreateView(generic.CreateView):
 #         persons = self.model.objects.all()
 #         if persons.exists():
 #             context["person"] = persons.last()
-            
-#         return context
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('persons:author_index'))
     
 class UpdateView(generic.UpdateView):
     model = Author
     form_class = AuthorForm
     template_name = 'author/author_update.html'
     success_url = reverse_lazy('persons:author_index')
-
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('persons:author_index'))
     
 class DetailView(generic.DetailView):
     model = Author
