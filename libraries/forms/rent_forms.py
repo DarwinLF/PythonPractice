@@ -10,10 +10,10 @@ class RentForm(forms.ModelForm):
         fields = ['book', 'customer', 'employee', 'library',
                    'due_date']
         widgets = {
-            'book': forms.Select(attrs={'class': 'form-control'}),
-            'customer': forms.Select(attrs={'class': 'form-control'}),
-            'employee': forms.Select(attrs={'class': 'form-control'}),
-            'library': forms.Select(attrs={'class': 'form-control'}),
+            'book': forms.Select(attrs={'class': 'form-control', 'id': 'bookSelect'}),
+            'customer': forms.Select(attrs={'class': 'form-control', 'id': 'customerSelect'}),
+            'employee': forms.Select(attrs={'class': 'form-control', 'id': 'employeeSelect'}),
+            'library': forms.Select(attrs={'class': 'form-control', 'id': 'librarySelect'}),
             'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 

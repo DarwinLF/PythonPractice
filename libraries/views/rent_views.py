@@ -1,3 +1,4 @@
+from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
@@ -26,6 +27,16 @@ class UpdateView(generic.UpdateView):
     form_class = RentForm
     template_name = 'rent/rent_update.html'
     success_url = reverse_lazy('libraries:rent_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        rent = self.object
+        context['selected_book'] = rent.book.pk
+        context['selected_customer'] = rent.customer.pk
+        context['selected_employee'] = rent.employee.pk
+
+        return context
     
 class DetailView(generic.DetailView):
     model = Rent

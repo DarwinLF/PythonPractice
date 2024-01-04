@@ -4,6 +4,9 @@
 
 {% block form_fiels%}
   <div class="form-group">
+    {{form.library.label_tag}} {{form.library}}
+  </div>
+  <div class="form-group">
     {{form.book.label_tag}} {{form.book}}
   </div>
   <div class="form-group">
@@ -13,9 +16,12 @@
     {{form.employee.label_tag}} {{form.employee}}
   </div>
   <div class="form-group">
-    {{form.library.label_tag}} {{form.library}}
-  </div>
-  <div class="form-group">
     {{form.due_date.label_tag}} {{form.due_date}}
   </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  {% load static %}
+  <script src="{% static 'main/js/rent_create_form.js' %}"></script>
 {% endblock %}
