@@ -55,7 +55,8 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'customer/customer_create_form.html')
 
     def test_valid_data_post(self):
-        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), self.library.pk)
+        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
+                               date(2000, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
@@ -72,7 +73,8 @@ class CreateViewTests(TestCase):
                                            library = self.library
                                            )
 
-        data = create_customer('Jackson', 'Jonson', '402-30709608', date(1999, 2, 12), self.library.pk)
+        data = create_customer('Jackson', 'Jonson', '402-30709608', 
+                               date(1999, 2, 12), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_create_form.html')
@@ -81,7 +83,8 @@ class CreateViewTests(TestCase):
         self.assertFalse(Customer.objects.filter(first_name='Jackson').exists())
 
     def test_invalid_rnc(self):
-        data = create_customer('Darwin', 'Lantigua', '402-307060-8', date(2000, 1, 8), self.library.pk)
+        data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
+                               date(2000, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Customer.objects.count(), 0)
@@ -89,9 +92,11 @@ class CreateViewTests(TestCase):
 
     #change in the future
     def test_future_birthday(self):
-        data = create_customer('Darwin', 'Lantigua', '402-307060-8', date(2050, 1, 8), self.library.pk)
+        data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
+                               date(2050, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
-        self.assertFormError(response, 'form', 'birthday', 'The birthday can\'t be in the future')
+        self.assertFormError(response, 'form', 'birthday', 
+                             'The birthday can\'t be in the future')
 
     def test_same_customer_same_library(self):
         customer = Customer.objects.create(first_name = 'Darwin',
@@ -100,7 +105,8 @@ class CreateViewTests(TestCase):
                                            birthday = date(2000, 1, 8),
                                            library = self.library
                                            )
-        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), self.library.pk)
+        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
+                               date(2000, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_create_form.html')
@@ -116,7 +122,8 @@ class CreateViewTests(TestCase):
         library2 = Library.objects.create(name = 'libreria2',
                                           location = 'Salcedo',
                                           rnc = '123-1234567-2')
-        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), library2.pk)
+        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
+                               date(2000, 1, 8), library2.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_index.html')
@@ -128,11 +135,15 @@ class UpdateViewTests(TestCase):
         self.library = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
-        self.customer1 = Customer.objects.create(first_name='Darwin', last_name='Lantigua', 
-                                                 rnc='402-3070960-8', birthday=date(2000, 1, 8), 
+        self.customer1 = Customer.objects.create(first_name='Darwin', 
+                                                 last_name='Lantigua', 
+                                                 rnc='402-3070960-8', 
+                                                 birthday=date(2000, 1, 8), 
                                                  library=self.library)
-        self.customer2 = Customer.objects.create(first_name='Jackson', last_name='Knight', 
-                                                 rnc='402-3070960-9', birthday=date(1999, 2, 12), 
+        self.customer2 = Customer.objects.create(first_name='Jackson', 
+                                                 last_name='Knight', 
+                                                 rnc='402-3070960-9', 
+                                                 birthday=date(1999, 2, 12), 
                                                  library=self.library)
         self.url = reverse('persons:customer_update', args=[self.customer2.pk])
         self.client = Client()
@@ -145,7 +156,11 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        updated_data = create_customer(self.customer2.first_name, self.customer2.last_name, self.customer1.rnc, self.customer2.birthday, self.customer2.library.pk)
+        updated_data = create_customer(self.customer2.first_name, 
+                                       self.customer2.last_name, 
+                                       self.customer1.rnc, 
+                                       self.customer2.birthday, 
+                                       self.customer2.library.pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -155,7 +170,8 @@ class UpdateViewTests(TestCase):
 
     def test_update_all_fields_except_rnc(self):
         # Submit the form with updated data
-        updated_data = create_customer('Marco', 'Diaz', self.customer2.rnc, date(2000, 4, 20), self.library.pk)
+        updated_data = create_customer('Marco', 'Diaz', self.customer2.rnc, 
+                                       date(2000, 4, 20), self.library.pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -172,8 +188,10 @@ class DetailViewTests(TestCase):
         self.library = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
-        self.customer = Customer.objects.create(first_name='Darwin', last_name='Lantigua', 
-                                                rnc='402-3070960-8', birthday=date(2000, 1, 8), 
+        self.customer = Customer.objects.create(first_name='Darwin', 
+                                                last_name='Lantigua', 
+                                                rnc='402-3070960-8', 
+                                                birthday=date(2000, 1, 8), 
                                                 library=self.library)
         self.url = reverse('persons:customer_detail', args=[self.customer.pk])
         self.client = Client()

@@ -47,7 +47,8 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'author/author_create_form.html')
 
     def test_valid_data_post(self):
-        data = create_author('Darwin', 'Lantigua', '402-3070960-8', date(2000, 1, 8), 'Esnaire')
+        data = create_author('Darwin', 'Lantigua', '402-3070960-8', 
+                             date(2000, 1, 8), 'Esnaire')
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
@@ -64,7 +65,8 @@ class CreateViewTests(TestCase):
                                              alias = 'Esnaire'
                                              )
 
-        data = create_author('Jackson', 'Jonson', '402-3070960-8', date(1999, 2, 12), 'Jack')
+        data = create_author('Jackson', 'Jonson', '402-3070960-8', 
+                             date(1999, 2, 12), 'Jack')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'author/author_create_form.html')
@@ -73,7 +75,8 @@ class CreateViewTests(TestCase):
         self.assertFalse(Author.objects.filter(first_name='Jackson').exists())
 
     def test_invalid_rnc(self):
-        data = create_author('Darwin', 'Lantigua', '402-307060-8', date(2000, 1, 8), 'Esnaire')
+        data = create_author('Darwin', 'Lantigua', '402-307060-8', 
+                             date(2000, 1, 8), 'Esnaire')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Author.objects.count(), 0)
@@ -81,14 +84,24 @@ class CreateViewTests(TestCase):
 
     #change in the future
     def test_future_birthday(self):
-        data = create_author('Darwin', 'Lantigua', '402-307060-8', date(2050, 1, 8), 'Esnaire')
+        data = create_author('Darwin', 'Lantigua', '402-307060-8', 
+                             date(2050, 1, 8), 'Esnaire')
         response = self.client.post(self.url, data, follow=True)
-        self.assertFormError(response, 'form', 'birthday', 'The birthday can\'t be in the future')
+        self.assertFormError(response, 'form', 'birthday', 
+                             'The birthday can\'t be in the future')
 
 class UpdateViewTests(TestCase):
     def setUp(self):
-        self.author1 = Author.objects.create(first_name='Darwin', last_name='Lantigua', rnc='402-3070960-8', birthday=date(2000, 1, 8), alias='Esnaire')
-        self.author2 = Author.objects.create(first_name='Jackson', last_name='Knight', rnc='402-3070960-9', birthday=date(1999, 2, 12), alias='Jack')
+        self.author1 = Author.objects.create(first_name='Darwin', 
+                                             last_name='Lantigua', 
+                                             rnc='402-3070960-8', 
+                                             birthday=date(2000, 1, 8), 
+                                             alias='Esnaire')
+        self.author2 = Author.objects.create(first_name='Jackson', 
+                                             last_name='Knight', 
+                                             rnc='402-3070960-9', 
+                                             birthday=date(1999, 2, 12), 
+                                             alias='Jack')
         self.url = reverse('persons:author_update', args=[self.author2.pk])
         self.client = Client()
 
@@ -100,7 +113,11 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        updated_data = create_author(self.author2.first_name, self.author2.last_name, self.author1.rnc, self.author2.birthday, self.author2.alias)
+        updated_data = create_author(self.author2.first_name, 
+                                     self.author2.last_name, 
+                                     self.author1.rnc, 
+                                     self.author2.birthday, 
+                                     self.author2.alias)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -110,7 +127,8 @@ class UpdateViewTests(TestCase):
 
     def test_update_all_fields_except_rnc(self):
         # Submit the form with updated data
-        updated_data = create_author('Marco', 'Diaz', self.author2.rnc, date(2000, 4, 20), 'Karate')
+        updated_data = create_author('Marco', 'Diaz', self.author2.rnc, 
+                                     date(2000, 4, 20), 'Karate')
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -124,7 +142,11 @@ class UpdateViewTests(TestCase):
 
 class DetailViewTests(TestCase):
     def setUp(self):
-        self.author = Author.objects.create(first_name='Darwin', last_name='Lantigua', rnc='402-3070960-8', birthday=date(2000, 1, 8), alias='Esnaire')
+        self.author = Author.objects.create(first_name='Darwin', 
+                                            last_name='Lantigua', 
+                                            rnc='402-3070960-8', 
+                                            birthday=date(2000, 1, 8), 
+                                            alias='Esnaire')
         self.url = reverse('persons:author_detail', args=[self.author.pk])
         self.client = Client()
     
