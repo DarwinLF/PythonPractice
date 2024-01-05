@@ -2,6 +2,9 @@
 
 {% block model%}rent{% endblock %}
 
+{% block form_id %}rent_form{% endblock %}
+{% block action_link %}{% url 'libraries:rent_create' %}{% endblock %}
+
 {% block form_fields%}
   <div class="form-group">
     {{form.library.label_tag}} {{form.library}}

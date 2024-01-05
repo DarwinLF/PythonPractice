@@ -2,6 +2,9 @@
 
 {% block model%}book{% endblock %}
 
+{% block form_id %}book_form{% endblock %}
+{% block action_link %}{% url 'libraries:book_create' %}{% endblock %}
+
 {% block form_fields%}
   <div class="form-group">
     {{form.title.label_tag}} {{form.title}}

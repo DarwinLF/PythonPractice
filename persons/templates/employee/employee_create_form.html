@@ -1,6 +1,9 @@
 {% extends 'main/create_form.html' %}
 
-{% block model%}customer{% endblock %}
+{% block model%}employee{% endblock %}
+
+{% block form_id %}employee_form{% endblock %}
+{% block action_link %}{% url 'persons:employee_create' %}{% endblock %}
 
 {% block form_fields%}
   <div class="form-group">
