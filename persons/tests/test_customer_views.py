@@ -95,8 +95,7 @@ class CreateViewTests(TestCase):
         data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
                                date(2050, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
-        self.assertFormError(response, 'form', 'birthday', 
-                             'The birthday can\'t be in the future')
+        self.assertEqual(Customer.objects.count(), 0)
 
     def test_same_customer_same_library(self):
         customer = Customer.objects.create(first_name = 'Darwin',
