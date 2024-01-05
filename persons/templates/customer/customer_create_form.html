@@ -2,7 +2,10 @@
 
 {% block model%}customer{% endblock %}
 
-{% block form_fiels%}
+{% block form_id %}customer_form{% endblock %}
+{% block action_link %}{% url 'persons:customer_create' %}{% endblock %}
+
+{% block form_fields%}
   <div class="form-group">
     {{form.first_name.label_tag}} {{form.first_name}}
   </div>
@@ -17,5 +20,48 @@
   </div>
   <div class="form-group">
     {{form.library.label_tag}} {{form.library}}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createlibraryModal">Create library</button>
   </div>
+{% endblock %}
+
+{% block modal %}
+  <div class="modal fade" id="createlibraryModal" tabindex="-1" role="dialog" aria-labelledby="createlibraryModalLabel" aria-hidden="true">
+    <div class="modal-dialog odal-dialog-centered modal-dark" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {% include 'library/library_create_form.html' with form=library_form %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $(document).ready(function(){
+      $('#library_form').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          success: function() {
+            $('#createlibraryModal').modal('hide');
+            $('#library_form')[0].reset();
+
+            location.reload();
+          },
+          error: function () {
+            // Handle errors if any
+            alert('Error submitting form');
+          }
+        });
+      })
+    });
+  </script>
 {% endblock %}

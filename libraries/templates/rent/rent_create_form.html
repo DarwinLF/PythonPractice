@@ -2,7 +2,7 @@
 
 {% block model%}rent{% endblock %}
 
-{% block form_fiels%}
+{% block form_fields%}
   <div class="form-group">
     {{form.library.label_tag}} {{form.library}}
   </div>
@@ -21,7 +21,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
     $(document).ready(function(){
       var bookSelect = $('#bookSelect');

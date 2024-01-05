@@ -2,11 +2,14 @@
 
 {% block model%}author{% endblock %}
 
+{% block form_id %}author_form{% endblock %}
+{% block action_link %}{% url 'persons:author_create' %}{% endblock %}
+
 {% comment %} {% if person %}
   <h2>The last person created was {{person}} with age: {{person.age}}</h2>
 {% endif %} {% endcomment %}
 
-{% block form_fiels%}
+{% block form_fields%}
   <div class="form-group">
     {{form.first_name.label_tag}} {{form.first_name}}
   </div>

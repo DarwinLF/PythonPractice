@@ -2,11 +2,11 @@
 
 {% block content %}
   <h1>Create a new {% block model%}model{% endblock %}</h1>
-  <form method="post" class="form">
+  <form method="post" class="form" id="{% block form_id %}form{% endblock %}" action="{% block action_link %}{% url 'main' %}{% endblock %}">
     {% csrf_token %}
-    {% block form_fiels%}{% endblock %}
+    {% block form_fields%}{% endblock %}
     <div class="container mt-3 text-center">
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary mb-2">Save</button>
     </div>
   </form>
 
@@ -25,5 +25,7 @@
         {% endfor %}
     </div>
   {% endif %}
+
+  {% block modal %}{% endblock %}
 {% endblock %}
 

@@ -1,3 +1,4 @@
+from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import generic
@@ -6,6 +7,7 @@ from django.db import IntegrityError
 
 from ..models import Customer
 from ..forms.customer_forms import CustomerForm
+from libraries.forms.library_forms import LibraryForm
 
 class IndexView(generic.ListView):
     template_name = 'customer/customer_index.html'
@@ -20,6 +22,11 @@ class CreateView(generic.CreateView):
     template_name_suffix = '_create_form'
     template_name = 'customer/customer_create_form.html'
     success_url = reverse_lazy('persons:customer_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['library_form'] = LibraryForm()
+        return context
 
     # def form_valid(self, form):
     #     try:
