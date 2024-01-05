@@ -43,6 +43,11 @@ class UpdateView(generic.UpdateView):
     template_name = 'customer/customer_update.html'
     success_url = reverse_lazy('persons:customer_index')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['library_form'] = LibraryForm()
+        return context
+
     # def form_valid(self, form):
     #     try:
     #         super().form_valid(form)

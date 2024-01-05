@@ -44,28 +44,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% block extra_scripts %}
-  <script>
-    $(document).ready(function(){
-      $('#library_form').submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-          type: 'POST',
-          url: $(this).attr('action'),
-          data: $(this).serialize(),
-          success: function() {
-            $('#createlibraryModal').modal('hide');
-            $('#library_form')[0].reset();
-
-            location.reload();
-          },
-          error: function () {
-            // Handle errors if any
-            alert('Error submitting form');
-          }
-        });
-      })
-    });
-  </script>
-{% endblock %}

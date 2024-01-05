@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Edit a {% block model%}model{% endblock %}</h1>
-  <form method="post" class="form">
+  <form method="post" class="form" id="{% block form_id %}form{% endblock %}">
     {% csrf_token %}
     {% block form_fields%}{% endblock %}
     <div class="container mt-3 text-center">
@@ -19,4 +19,6 @@
         {% endfor %}
     </div>
   {% endif %}
+
+  {% block modal %}{% endblock %}
 {% endblock %}
