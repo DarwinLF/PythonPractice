@@ -1,3 +1,5 @@
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+
 a {
     color: #4e8cff; /* Link color in dark mode */
 }
@@ -25,4 +27,9 @@ body {
 
 .link-custom-color:hover {
     color: #2a5da7; /* Link color on hover in dark mode */
+}
+
+.modal-body {
+    overflow-y: auto;
+
 }
