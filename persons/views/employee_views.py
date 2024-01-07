@@ -4,8 +4,9 @@ from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 
-from ..models import Employee
-from ..forms.employee_forms import EmployeeForm
+from persons.models import Employee
+from persons.forms.employee_forms import EmployeeForm
+from libraries.forms.library_forms import LibraryForm
 
 class IndexView(generic.ListView):
     template_name = 'employee/employee_index.html'
@@ -20,12 +21,22 @@ class CreateView(generic.CreateView):
     template_name_suffix = '_create_form'
     template_name = 'employee/employee_create_form.html'
     success_url = reverse_lazy('persons:employee_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['library_form'] = LibraryForm()
+        return context
     
 class UpdateView(generic.UpdateView):
     model = Employee
     form_class = EmployeeForm
     template_name = 'employee/employee_update.html'
     success_url = reverse_lazy('persons:employee_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['library_form'] = LibraryForm()
+        return context
     
 class DetailView(generic.DetailView):
     model = Employee

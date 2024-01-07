@@ -3,20 +3,102 @@
 {% block model%}rent{% endblock %}
 
 {% block form_fields%}
-  <div class="form-group">
-    {{form.library.label_tag}} {{form.library}}
+  <div class="form-group row">
+    <div class="col-sm-8">
+      {{form.library.label_tag}} {{form.library}}
+    </div>
+    <div class="col-sm-4 align-self-end">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createLibraryModal"><i class="bi bi-plus-circle"></i></button>
+    </div>
   </div>
-  <div class="form-group">
-    {{form.book.label_tag}} {{form.book}}
+  <div class="form-group row">
+    <div class="col-sm-8">
+      {{form.book.label_tag}} {{form.book}}
+    </div>
+    <div class="col-sm-4 align-self-end">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBookModal"><i class="bi bi-plus-circle"></i></button>
+    </div>
   </div>
-  <div class="form-group">
-    {{form.customer.label_tag}} {{form.customer}}
+  <div class="form-group row">
+    <div class="col-sm-8">
+      {{form.customer.label_tag}} {{form.customer}}
+    </div>
+    <div class="col-sm-4 align-self-end">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomerModal"><i class="bi bi-plus-circle"></i></button>
+    </div>
   </div>
-  <div class="form-group">
-    {{form.employee.label_tag}} {{form.employee}}
+  <div class="form-group row">
+    <div class="col-sm-8">
+      {{form.employee.label_tag}} {{form.employee}}
+    </div>
+    <div class="col-sm-4 align-self-end">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createEmployeeModal"><i class="bi bi-plus-circle"></i></button>
+    </div>
   </div>
   <div class="form-group">
     {{form.due_date.label_tag}} {{form.due_date}}
+  </div>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal fade" id="createLibraryModal" tabindex="-1" role="dialog" aria-labelledby="createLibraryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dark" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="libraryBodyModal">
+          {% include 'library/library_create_form.html' with form=library_form %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="createBookModal" tabindex="-1" role="dialog" aria-labelledby="createBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dark" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="bookBodyModal">
+          {% include 'book/book_create_form.html' with form=book_form %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="createCustomerModal" tabindex="-1" role="dialog" aria-labelledby="createCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dark" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="customerBodyModal">
+          {% include 'customer/customer_create_form.html' with form=customer_form %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="createEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="createEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dark" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="employeeBodyModal">
+          {% include 'employee/employee_create_form.html' with form=employee_form %}
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
 
@@ -87,4 +169,9 @@
       });
     });
   </script>
+  {% load static %}
+  <script type="text/javascript" src="{% static 'main/js/libraryModal.js' %}"></script>
+  <script type="text/javascript" src="{% static 'main/js/bookModal.js' %}"></script>
+  <script type="text/javascript" src="{% static 'main/js/customerModal.js' %}"></script>
+  <script type="text/javascript" src="{% static 'main/js/employeeModal.js' %}"></script>
 {% endblock %}

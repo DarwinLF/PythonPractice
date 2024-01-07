@@ -5,8 +5,12 @@ from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 
-from ..models import Rent
-from ..forms.rent_forms import RentForm
+from libraries.models import Rent
+from libraries.forms.rent_forms import RentForm
+from libraries.forms.library_forms import LibraryForm
+from libraries.forms.book_forms import BookForm
+from persons.forms.customer_forms import CustomerForm
+from persons.forms.employee_forms import EmployeeForm
 
 class IndexView(generic.ListView):
     template_name = 'rent/rent_index.html'
@@ -21,6 +25,14 @@ class CreateView(generic.CreateView):
     template_name_suffix = '_create_form'
     template_name = 'rent/rent_create_form.html'
     success_url = reverse_lazy('libraries:rent_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['library_form'] = LibraryForm()
+        context['book_form'] = BookForm()
+        context['customer_form'] = CustomerForm()
+        context['employee_form'] = EmployeeForm()
+        return context
     
 class UpdateView(generic.UpdateView):
     model = Rent
@@ -35,6 +47,11 @@ class UpdateView(generic.UpdateView):
         context['selected_book'] = rent.book.pk
         context['selected_customer'] = rent.customer.pk
         context['selected_employee'] = rent.employee.pk
+
+        context['library_form'] = LibraryForm()
+        context['book_form'] = BookForm()
+        context['customer_form'] = CustomerForm()
+        context['employee_form'] = EmployeeForm()
 
         return context
     

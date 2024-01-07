@@ -5,8 +5,8 @@ from django.views import generic
 from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 
-from ..models import Customer
-from ..forms.customer_forms import CustomerForm
+from persons.models import Customer
+from persons.forms.customer_forms import CustomerForm
 from libraries.forms.library_forms import LibraryForm
 
 class IndexView(generic.ListView):
