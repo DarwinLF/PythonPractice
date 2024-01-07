@@ -8,12 +8,13 @@ class RentForm(forms.ModelForm):
     class Meta:
         model = Rent
         fields = ['book', 'customer', 'employee', 'library',
-                   'due_date']
+                  'amount_to_rent', 'due_date']
         widgets = {
             'book': forms.Select(attrs={'class': 'form-control', 'id': 'bookSelect'}),
             'customer': forms.Select(attrs={'class': 'form-control', 'id': 'customerSelect'}),
             'employee': forms.Select(attrs={'class': 'form-control', 'id': 'employeeSelect'}),
             'library': forms.Select(attrs={'class': 'form-control', 'id': 'librarySelect'}),
+            'amount_to_rent': forms.NumberInput(attrs={'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
