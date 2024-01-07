@@ -24,7 +24,8 @@ class Book(models.Model):
 
     @property
     def rented(self):
-        return sum([x.amount_to_rent for x in self.library.rents.all()])
+        return self.library.rents.aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
+        #return sum([x.amount_to_rent for x in self.library.rents.all()])
     
     @property
     def available(self):
