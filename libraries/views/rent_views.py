@@ -11,6 +11,7 @@ from libraries.forms.library_forms import LibraryForm
 from libraries.forms.book_forms import BookForm
 from persons.forms.customer_forms import CustomerForm
 from persons.forms.employee_forms import EmployeeForm
+from libraries.functions import AdjustStatusOfBook
 
 class IndexView(generic.ListView):
     template_name = 'rent/rent_index.html'
@@ -34,6 +35,14 @@ class CreateView(generic.CreateView):
         context['employee_form'] = EmployeeForm()
         return context
     
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        if not(form.errors):
+            AdjustStatusOfBook(form.cleaned_data['book'].pk)
+
+        return response
+    
 class UpdateView(generic.UpdateView):
     model = Rent
     form_class = RentForm
@@ -54,6 +63,14 @@ class UpdateView(generic.UpdateView):
         context['employee_form'] = EmployeeForm()
 
         return context
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        if not(form.errors):
+            AdjustStatusOfBook(form.cleaned_data['book'].pk)
+
+        return response
     
 class DetailView(generic.DetailView):
     model = Rent
