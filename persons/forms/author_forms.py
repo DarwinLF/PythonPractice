@@ -19,6 +19,6 @@ class AuthorForm(PersonForm):
         instance_pk = self.instance.pk if self.instance else None
 
         if Author.objects.filter(rnc=rnc).exclude(pk=instance_pk).exists():
-            self.add_error(None, 'RNC already exists')
+            self.add_error('rnc', 'RNC already exists')
         
         return data

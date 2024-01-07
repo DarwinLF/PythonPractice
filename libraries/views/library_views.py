@@ -20,31 +20,12 @@ class CreateView(generic.CreateView):
     template_name_suffix = '_create_form'
     template_name = 'library/library_create_form.html'
     success_url = reverse_lazy('libraries:library_index')
-
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('libraries:library_index'))
     
 class UpdateView(generic.UpdateView):
     model = Library
     form_class = LibraryForm
     template_name = 'library/library_update.html'
     success_url = reverse_lazy('libraries:library_index')
-
-    def form_valid(self, form):
-        # self.kwargs.get('pk')
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('rnc', 'RNC already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('libraries:library_index'))
     
 class DetailView(generic.DetailView):
     model = Library

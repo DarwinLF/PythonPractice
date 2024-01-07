@@ -25,11 +25,17 @@ class BookForm(forms.ModelForm):
         data = self.cleaned_data
         isbn = data['isbn']
         pub_date = data['published_date']
+        instance_pk = self.instance.pk if self.instance else None
 
         if not validateIsbn13(isbn):
             self.add_error('isbn', 'Invalid ISBN')
 
         if pub_date > timezone.now().date():
             self.add_error('published_date', 'The published date can\'t be in the future')
+
+        isbn = isbn.replace('-', '')
+
+        if Book.objects.filter(isbn=isbn).exclude(pk=instance_pk).exists():
+            self.add_error('isbn', 'ISBN already exists')
         
         return data

@@ -28,15 +28,6 @@ class CreateView(generic.CreateView):
         context['library_form'] = LibraryForm()
         context['author_form'] = AuthorForm()
         return context
-
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('isbn', 'ISBN already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('libraries:book_index'))
     
 class UpdateView(generic.UpdateView):
     model = Book
@@ -49,15 +40,6 @@ class UpdateView(generic.UpdateView):
         context['library_form'] = LibraryForm()
         context['author_form'] = AuthorForm()
         return context
-
-    def form_valid(self, form):
-        try:
-            super().form_valid(form)
-        except IntegrityError as e:
-            form.add_error('isbn', 'ISBN already exists')
-            return render(self.request, self.template_name, {'form': form})
-
-        return HttpResponseRedirect(reverse('libraries:book_index'))
     
 class DetailView(generic.DetailView):
     model = Book

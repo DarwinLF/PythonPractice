@@ -34,8 +34,14 @@ class LibraryForm(forms.ModelForm):
     def clean(self):
         data = self.cleaned_data
         rnc = data['rnc']
+        instance_pk = self.instance.pk if self.instance else None
 
         if not validateRnc(rnc):
             self.add_error('rnc', 'Invalid Rnc')
+
+        rnc = rnc.replace('-', '')
+
+        if Library.objects.filter(rnc=rnc).exclude(pk=instance_pk).exists():
+            self.add_error('rnc', 'RNC already exists')
         
         return data
