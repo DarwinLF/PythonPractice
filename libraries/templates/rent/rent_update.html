@@ -15,7 +15,10 @@
     <div class="col-sm-8">
       {{form.book.label_tag}} {{form.book}}
     </div>
-    <div class="col-sm-4 align-self-end">
+    <div class="col-sm-2 align-self-end">
+      <input type="text" id="availableBooks" class="form-control" readonly value="0">
+    </div>
+    <div class="col-sm-2 align-self-end">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBookModal"><i class="bi bi-plus-circle"></i></button>
     </div>
   </div>
@@ -120,6 +123,17 @@
                   bookSelect.append('<option value="' + book.pk + '">' + book.fields.title + '</option>');
               });
               bookSelect.val({{ selected_book }});
+              $.ajax({
+                url: '/libraries/book/ajax/getAvailable/' + {{ selected_book }},
+                success: function(data){
+                  $('#availableBooks').val(data.availableBooks)
+                },
+                error: function(xhr, status, error) {
+                  if(xhr.status == 404) {
+                    $('#availableBooks').val(0)
+                  }
+                }
+              });
   
               var customers = JSON.parse(data.customers)
               var customerSelect = $('#customerSelect');
@@ -151,6 +165,7 @@
                   $.each(books, function(index, book){
                       bookSelect.append('<option value="' + book.pk + '">' + book.fields.title + '</option>');
                   });
+                  $('#availableBooks').val(0)
   
                   var customers = JSON.parse(data.customers)
                   var customerSelect = $('#customerSelect');
@@ -167,8 +182,40 @@
                   $.each(employees, function(index, employees){
                       employeeSelect.append('<option value="' + employees.pk + '">' + employees.fields.first_name + ' ' + employees.fields.last_name + '</option>');
                   });
+              },
+              error: function(xhr, status, error) {
+                if(xhr.status == 404) {
+                  var bookSelect = $('#bookSelect');
+                  bookSelect.empty();
+                  bookSelect.append('<option value="" selected="">---------</option>')
+
+                  var customerSelect = $('#customerSelect');
+                  customerSelect.empty();
+                  customerSelect.append('<option value="" selected="">---------</option>')
+
+                  var employeeSelect = $('#employeeSelect');
+                  employeeSelect.empty();
+                  employeeSelect.append('<option value="" selected="">---------</option>')
+
+                  $('#availableBooks').val(0)
+                }
               }
           });
+      });
+
+      $('#bookSelect').on('change', function() {
+        var selectedBook = $(this).val();
+        $.ajax({
+          url: '/libraries/book/ajax/getAvailable/' + selectedBook,
+          success: function(data){
+            $('#availableBooks').val(data.availableBooks)
+          },
+          error: function(xhr, status, error) {
+            if(xhr.status == 404) {
+              $('#availableBooks').val(0)
+            }
+          }
+        });
       });
     });
   </script>

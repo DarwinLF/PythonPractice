@@ -3,7 +3,7 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 from django.core.serializers import serialize
 
-from libraries.models import Library
+from libraries.models import Library, Book
 
 class RentAjaxView(View):
     def get(self, request, *args, **kwargs):
@@ -16,3 +16,11 @@ class RentAjaxView(View):
         employees = serialize('json', library.employees.all())
 
         return JsonResponse({'customers': customers, 'books': books, 'employees': employees})
+    
+class BookAvailableAjaxView(View):
+    def get(self, request, *args, **kwargs):
+        bookId = self.kwargs.get('pk')
+
+        book = get_object_or_404(Book, pk=bookId)
+
+        return JsonResponse({'availableBooks': book.available})
