@@ -22,11 +22,11 @@ class Book(models.Model):
         self.isbn = self.isbn.replace('-', '')
         super().save(*args, **kwargs)
 
-    @property
-    def rented(self):
-        return self.library.rents.aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
-        #return sum([x.amount_to_rent for x in self.library.rents.all()])
+    def rented(self, rent_pk):
+        if rent_pk == 0:
+            return self.library.rents.aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
+        else:
+            return self.library.rents.exclude(pk=rent_pk).aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
     
-    @property
-    def available(self):
-        return self.quantity - self.rented
+    def available(self, rent_pk=0):
+        return self.quantity - self.rented(rent_pk)

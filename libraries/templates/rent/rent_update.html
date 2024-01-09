@@ -111,47 +111,49 @@
 {% block extra_scripts %}
   <script>
     $(document).ready(function(){
-      var selectedLibrary = document.getElementById('librarySelect').value;
+      if(performance.navigation.type === 0) {
+        var selectedLibrary = document.getElementById('librarySelect').value;
   
-      $.ajax({
-          url: '/libraries/rent/ajax/getLibrary/' + selectedLibrary,
-          success: function(data){
-              var books = JSON.parse(data.books)
-              var bookSelect = $('#bookSelect');
-              bookSelect.empty();
-              $.each(books, function(index, book){
-                  bookSelect.append('<option value="' + book.pk + '">' + book.fields.title + '</option>');
-              });
-              bookSelect.val({{ selected_book }});
-              $.ajax({
-                url: '/libraries/book/ajax/getAvailable/' + {{ selected_book }},
-                success: function(data){
-                  $('#availableBooks').val(data.availableBooks)
-                },
-                error: function(xhr, status, error) {
-                  if(xhr.status == 404) {
-                    $('#availableBooks').val(0)
+        $.ajax({
+            url: '/libraries/rent/ajax/getLibrary/' + selectedLibrary,
+            success: function(data){
+                var books = JSON.parse(data.books)
+                var bookSelect = $('#bookSelect');
+                bookSelect.empty();
+                $.each(books, function(index, book){
+                    bookSelect.append('<option value="' + book.pk + '">' + book.fields.title + '</option>');
+                });
+                bookSelect.val({{ selected_book }});
+                $.ajax({
+                  url: '/libraries/book/ajax/getAvailable/' + {{ selected_book }} + '/' + {{ object.pk }},
+                  success: function(data){
+                    $('#availableBooks').val(data.availableBooks)
+                  },
+                  error: function(xhr, status, error) {
+                    if(xhr.status == 404) {
+                      $('#availableBooks').val(0)
+                    }
                   }
-                }
-              });
-  
-              var customers = JSON.parse(data.customers)
-              var customerSelect = $('#customerSelect');
-              customerSelect.empty();
-              $.each(customers, function(index, customer){
-                  customerSelect.append('<option value="' + customer.pk + '">' + customer.fields.first_name + ' ' + customer.fields.last_name + '</option>');
-              });
-              customerSelect.val({{ selected_customer }});
-  
-              var employees = JSON.parse(data.employees)
-              var employeeSelect = $('#employeeSelect');
-              employeeSelect.empty();
-              $.each(employees, function(index, employees){
-                  employeeSelect.append('<option value="' + employees.pk + '">' + employees.fields.first_name + ' ' + employees.fields.last_name + '</option>');
-              });
-              employeeSelect.val({{ selected_employee }});
-          }
-      });
+                });
+    
+                var customers = JSON.parse(data.customers)
+                var customerSelect = $('#customerSelect');
+                customerSelect.empty();
+                $.each(customers, function(index, customer){
+                    customerSelect.append('<option value="' + customer.pk + '">' + customer.fields.first_name + ' ' + customer.fields.last_name + '</option>');
+                });
+                customerSelect.val({{ selected_customer }});
+    
+                var employees = JSON.parse(data.employees)
+                var employeeSelect = $('#employeeSelect');
+                employeeSelect.empty();
+                $.each(employees, function(index, employees){
+                    employeeSelect.append('<option value="' + employees.pk + '">' + employees.fields.first_name + ' ' + employees.fields.last_name + '</option>');
+                });
+                employeeSelect.val({{ selected_employee }});
+            }
+        });
+      }
   
       $('#librarySelect').on('change', function() {
           var selectedValue = $(this).val();
@@ -206,7 +208,7 @@
       $('#bookSelect').on('change', function() {
         var selectedBook = $(this).val();
         $.ajax({
-          url: '/libraries/book/ajax/getAvailable/' + selectedBook,
+          url: '/libraries/book/ajax/getAvailable/' + selectedBook + '/' + {{ object.pk }},
           success: function(data){
             $('#availableBooks').val(data.availableBooks)
           },

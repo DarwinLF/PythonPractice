@@ -21,5 +21,6 @@ class Rent(models.Model):
         return f'{self.customer} - due date: {self.due_date}'
     
     def save(self, *args, **kwargs):
-        self.rent_date = date.today()
+        if not self.pk:
+            self.rent_date = date.today()
         super().save(*args, **kwargs)

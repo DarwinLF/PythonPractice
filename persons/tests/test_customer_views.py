@@ -131,19 +131,27 @@ class CreateViewTests(TestCase):
 
 class UpdateViewTests(TestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
+        self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.library2 = Library.objects.create(name = 'libreria2',
+                                               location = 'Salcedo',
+                                               rnc = '111-1234567-2')
         self.customer1 = Customer.objects.create(first_name='Darwin', 
                                                  last_name='Lantigua', 
                                                  rnc='402-3070960-8', 
                                                  birthday=date(2000, 1, 8), 
-                                                 library=self.library)
+                                                 library=self.library1)
         self.customer2 = Customer.objects.create(first_name='Jackson', 
                                                  last_name='Knight', 
                                                  rnc='402-3070960-9', 
                                                  birthday=date(1999, 2, 12), 
-                                                 library=self.library)
+                                                 library=self.library1)
+        self.customer3 = Customer.objects.create(first_name='Jackson', 
+                                                 last_name='Knight', 
+                                                 rnc='402-3070960-9', 
+                                                 birthday=date(1999, 2, 12), 
+                                                 library=self.library2)
         self.url = reverse('persons:customer_update', args=[self.customer2.pk])
         self.client = Client()
 
@@ -170,7 +178,7 @@ class UpdateViewTests(TestCase):
     def test_update_all_fields_except_rnc(self):
         # Submit the form with updated data
         updated_data = create_customer('Marco', 'Diaz', self.customer2.rnc, 
-                                       date(2000, 4, 20), self.library.pk)
+                                       date(2000, 4, 20), self.library1.pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -180,7 +188,21 @@ class UpdateViewTests(TestCase):
         self.assertEqual(self.customer2.last_name, 'Diaz')
         self.assertEqual(self.customer2.rnc, '40230709609')
         self.assertEqual(self.customer2.birthday, date(2000, 4, 20))
-        self.assertEqual(self.customer2.library, self.library)
+        self.assertEqual(self.customer2.library, self.library1)
+
+    def test_update_same_customer_of_different_library_to_same_library(self):
+        updated_data = create_customer(self.customer2.first_name, 
+                                       self.customer2.last_name, 
+                                       self.customer2.rnc, 
+                                       self.customer2.birthday, 
+                                       self.library2.pk)
+        response = self.client.post(self.url, updated_data, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer/customer_update.html')
+
+        self.customer2.refresh_from_db()
+        self.assertEqual(self.customer2.library, self.library1)
 
 class DetailViewTests(TestCase):
     def setUp(self):

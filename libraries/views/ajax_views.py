@@ -23,4 +23,13 @@ class BookAvailableAjaxView(View):
 
         book = get_object_or_404(Book, pk=bookId)
 
-        return JsonResponse({'availableBooks': book.available})
+        return JsonResponse({'availableBooks': book.available()})
+    
+class BookAvailableInUpdateAjaxView(View):
+    def get(self, request, *args, **kwargs):
+        bookId = self.kwargs.get('book_pk')
+        rentId = self.kwargs.get('rent_pk')
+
+        book = get_object_or_404(Book, pk=bookId)
+
+        return JsonResponse({'availableBooks': book.available(rentId)})

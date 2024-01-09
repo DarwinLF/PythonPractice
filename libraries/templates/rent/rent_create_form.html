@@ -114,17 +114,20 @@
 {% block extra_scripts %}
   <script>
     $(document).ready(function(){
-      var bookSelect = $('#bookSelect');
-      bookSelect.empty();
-      bookSelect.append('<option value="" selected="">---------</option>')
-  
-      var customerSelect = $('#customerSelect');
-      customerSelect.empty();
-      customerSelect.append('<option value="" selected="">---------</option>')
-  
-      var employeeSelect = $('#employeeSelect');
-      employeeSelect.empty();
-      employeeSelect.append('<option value="" selected="">---------</option>')
+      //only in the first page load and not in reload
+      if(performance.navigation.type === 0) {
+        var bookSelect = $('#bookSelect');
+        bookSelect.empty();
+        bookSelect.append('<option value="" selected="">---------</option>')
+    
+        var customerSelect = $('#customerSelect');
+        customerSelect.empty();
+        customerSelect.append('<option value="" selected="">---------</option>')
+    
+        var employeeSelect = $('#employeeSelect');
+        employeeSelect.empty();
+        employeeSelect.append('<option value="" selected="">---------</option>')
+      }
   
       $('#librarySelect').on('change', function() {
           var selectedLibrary = $(this).val();

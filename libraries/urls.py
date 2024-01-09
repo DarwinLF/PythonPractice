@@ -30,5 +30,8 @@ urlpatterns = [
           name='rent_ajax_library'),
      path('book/ajax/getAvailable/<int:pk>', 
           ajax_views.BookAvailableAjaxView.as_view(),
-          name='book_ajax_available')
+          name='book_ajax_available'),
+     path('book/ajax/getAvailable/<int:book_pk>/<int:rent_pk>', 
+     ajax_views.BookAvailableInUpdateAjaxView.as_view(),
+     name='book_ajax_available_update'),
 ]
