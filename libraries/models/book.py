@@ -17,6 +17,8 @@ class Book(models.Model):
     library = models.ForeignKey('libraries.Library', 
                                 on_delete = models.PROTECT,
                                 related_name = 'books')
+    gender = models.ForeignKey('libraries.BookGenders',
+                                on_delete = models.PROTECT)
 
     def __str__(self):
         return self.title
