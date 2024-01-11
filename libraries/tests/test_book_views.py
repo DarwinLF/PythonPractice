@@ -3,11 +3,12 @@ from django.urls import reverse
 
 from datetime import date
 
-from libraries.models import Book, Library, BookStatus
+from libraries.models import Book, Library, BookStatus, BookGenders
 from persons.models import Author
 
 class IndexViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.author1 = Author.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
@@ -21,12 +22,13 @@ class IndexViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
                                          author = self.author1,
                                          library = self.library1,
-                                         status = self.status[0]
+                                         status = self.status[0],
                                          )
         self.url = reverse('libraries:book_index')
         self.client = Client()
@@ -39,14 +41,16 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'Darwin Lantigua (Esnaire)')
         self.assertContains(response, 'libreria1')
         self.assertContains(response, 'Available')
+        self.assertContains(response, 'Fiction')
         self.assertTemplateUsed(response, 'book/book_index.html')
 
-def create_book(title, published_date, isbn, quantity, rent_price, 
+def create_book(title, published_date, isbn, gender, quantity, rent_price, 
                 sale_price, author, library, status):
     return {
         'title': title,
         'published_date': published_date,
         'isbn': isbn,
+        'gender': gender,
         'quantity': quantity,
         'rent_price': rent_price,
         'sale_price': sale_price,
@@ -57,6 +61,7 @@ def create_book(title, published_date, isbn, quantity, rent_price,
 
 class CreateViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.author1 = Author.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
@@ -78,8 +83,9 @@ class CreateViewTests(TestCase):
 
     def test_valid_data_post(self):
         data = create_book('Our love is live', date(2020, 6, 2), 
-                           '123-1-123-12345-1', 5, 300, 500, self.author1.pk, 
-                           self.library1.pk, self.status[0].pk)
+                           '123-1-123-12345-1', self.genders[0].pk, 5, 300, 
+                           500, self.author1.pk, self.library1.pk, 
+                           self.status[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -92,6 +98,7 @@ class CreateViewTests(TestCase):
     def test_duplicate_isbn(self):
         book = Book.objects.create(title = 'Our love is live',
                                    published_date = date(2020, 6, 2),
+                                   gender = self.genders[0],
                                    isbn = '123-1-123-12345-1',
                                    quantity = 5, rent_price = 300,
                                    sale_price = 500, author = self.author1,
@@ -100,8 +107,8 @@ class CreateViewTests(TestCase):
                                    )
         
         data = create_book('Alpha', date(2018, 8, 6), '123-1-12312345-1',
-                           7, 200, 600, self.author1.pk, self.library1.pk, 
-                           self.status[1].pk)
+                           self.genders[0].pk, 7, 200, 600, self.author1.pk, 
+                           self.library1.pk, self.status[1].pk)
         response = self.client.post(self.url, data, follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -111,8 +118,9 @@ class CreateViewTests(TestCase):
 
     def test_invalid_isbn(self):
         data = create_book('Our love is live', date(2020, 6, 2), 
-                           '123-1-12-12345-1', 5, 300, 500, self.author1.pk, 
-                           self.library1.pk, self.status[0].pk)
+                           '123-1-12-12345-1', self.genders[0].pk, 5, 300, 
+                           500, self.author1.pk, self.library1.pk, 
+                           self.status[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Book.objects.count(), 0)
@@ -120,6 +128,7 @@ class CreateViewTests(TestCase):
 
 class UpdateViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.author1 = Author.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
@@ -133,6 +142,7 @@ class UpdateViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
@@ -143,6 +153,7 @@ class UpdateViewTests(TestCase):
         self.book2 = Book.objects.create(title = 'Alpha',
                                          published_date = date(2020, 6, 2),
                                          isbn = '111-2-333-44444-5',
+                                         gender = self.genders[0],
                                          quantity = 7,
                                          rent_price = 200,
                                          sale_price = 600,
@@ -162,8 +173,9 @@ class UpdateViewTests(TestCase):
     def test_update_to_duplicate_isbn(self):
         # Submit the form with updated data
         updated_data = create_book(self.book2.title, self.book2.published_date, 
-                                   self.book1.isbn, self.book2.quantity, 
-                                   self.book2.rent_price, self.book2.sale_price,
+                                   self.book1.isbn,  self.book2.gender, 
+                                   self.book2.quantity, self.book2.rent_price, 
+                                   self.book2.sale_price, 
                                    self.book2.author.pk, self.book2.library.pk, 
                                    self.book2.status.pk)
         response = self.client.post(self.url, updated_data, follow=True)
@@ -176,9 +188,9 @@ class UpdateViewTests(TestCase):
     def test_update_all_fields_except_isbn(self):
         # Submit the form with updated data
         updated_data = create_book('Blood bond', date(2017, 3, 3), 
-                                   self.book2.isbn, 10, 150, 300, 
-                                   self.book2.author.pk, self.book2.library.pk, 
-                                   self.book2.status.pk)
+                                   self.book2.isbn, self.genders[1].pk, 10, 150, 
+                                   300, self.book2.author.pk, 
+                                   self.book2.library.pk, self.status[1].pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'book/book_index.html')
@@ -189,6 +201,7 @@ class UpdateViewTests(TestCase):
 
 class DetailViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.author1 = Author.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
@@ -202,6 +215,7 @@ class DetailViewTests(TestCase):
         self.book = Book.objects.create(title = 'Our love is live',
                                         published_date = date(2020, 6, 2),
                                         isbn = '123-1-123-12345-1',
+                                        gender = self.genders[0],
                                         quantity = 5,
                                         rent_price = 300,
                                         sale_price = 500,

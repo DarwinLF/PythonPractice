@@ -3,11 +3,12 @@ from django.urls import reverse
 
 from datetime import date
 
-from libraries.models import Rent, Book, Library, BookStatus
+from libraries.models import Rent, Book, Library, BookStatus, BookGenders
 from persons.models import Author, Customer, Employee
 
 class IndexViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
@@ -31,6 +32,7 @@ class IndexViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
@@ -68,6 +70,7 @@ def create_rent(book, amount_to_rent, customer, employee, library, due_date):
 
 class CreateViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
@@ -91,6 +94,7 @@ class CreateViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
@@ -171,6 +175,7 @@ class CreateViewTests(TestCase):
 
 class UpdateViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
@@ -194,6 +199,7 @@ class UpdateViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
@@ -284,6 +290,7 @@ class UpdateViewTests(TestCase):
 
 class DetailViewTests(TestCase):
     def setUp(self):
+        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
@@ -307,6 +314,7 @@ class DetailViewTests(TestCase):
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
+                                         gender = self.genders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
