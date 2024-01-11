@@ -5,6 +5,7 @@
     <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
     <p class="card-text">Published Date: {{ model.published_date }}</p>
     <p class="card-text">ISBN: {{ model.isbn }}</p>
+    <p class="card-text">Gender: {{ model.gender }}</p>
     <p class="card-text">Quantity: {{ model.quantity }}</p>
     <p class="card-text">Rent Price: {{ model.rent_price }}</p>
     <p class="card-text">Sale Price: {{ model.sale_price }}</p>
