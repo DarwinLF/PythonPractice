@@ -1,5 +1,7 @@
 from django.db import models
 
+from libraries.services import BookService
+
 class Book(models.Model):
     title = models.CharField(max_length = 200)
     published_date = models.DateField()
@@ -10,7 +12,8 @@ class Book(models.Model):
     author = models.ForeignKey('persons.Author', 
                                on_delete = models.PROTECT, 
                                related_name = 'books')
-    status = models.ForeignKey('libraries.BookStatus', on_delete = models.PROTECT)
+    status = models.ForeignKey('libraries.BookStatus', 
+                               on_delete = models.PROTECT)
     library = models.ForeignKey('libraries.Library', 
                                 on_delete = models.PROTECT,
                                 related_name = 'books')
@@ -24,9 +27,16 @@ class Book(models.Model):
 
     def rented(self, rent_pk):
         if rent_pk == 0:
-            return self.library.rents.aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
+            return self.library.rents.aggregate(
+                total_rented=models.Sum('amount_to_rent'))['total_rented'] \
+                    or 0
         else:
-            return self.library.rents.exclude(pk=rent_pk).aggregate(total_rented=models.Sum('amount_to_rent'))['total_rented'] or 0
+            return self.library.rents.exclude(pk=rent_pk).aggregate(
+                total_rented=models.Sum('amount_to_rent'))['total_rented'] \
+                    or 0
     
     def available(self, rent_pk=0):
         return self.quantity - self.rented(rent_pk)
+    
+    def AdjustStatusOfBook(self):
+        return BookService.AdjustStatusOfBook(self.pk)

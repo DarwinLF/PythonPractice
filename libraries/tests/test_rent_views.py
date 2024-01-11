@@ -145,6 +145,30 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_create_form.html')
         self.assertEqual(Rent.objects.count(), 0)
 
+    def test_run_out_of_books(self):
+        data = create_rent(self.book1.pk, 5, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2025, 6, 12))
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Spent')
+        
+    def test_dont_run_out_of_books(self):
+        data = create_rent(self.book1.pk, 4, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2025, 6, 12))
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Available')
+
 class UpdateViewTests(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
@@ -233,6 +257,30 @@ class UpdateViewTests(TestCase):
         
         self.rent1.refresh_from_db()
         self.assertEqual(self.rent1.amount_to_rent, 1)
+
+    def test_update_and_run_out_of_books(self):
+        data = create_rent(self.book1.pk, 5, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2025, 6, 12))
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Spent')
+        
+    def test_update_and_dont_run_out_of_books(self):
+        data = create_rent(self.book1.pk, 4, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2025, 6, 12))
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Available')
 
 class DetailViewTests(TestCase):
     def setUp(self):

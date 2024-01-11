@@ -5,16 +5,17 @@ from django.db import migrations
 def populate_data(apps, schema_editor):
     BookStatus = apps.get_model('libraries', 'BookStatus')
     BookStatus.objects.create(name='Available')
+    BookStatus.objects.create(name='Spent')
     BookStatus.objects.create(name='On Hold')
     BookStatus.objects.create(name='In Transit')
+    BookStatus.objects.create(name='Reserved')
     BookStatus.objects.create(name='Checked Out')
-    BookStatus.objects.create(name='Renewed')
     BookStatus.objects.create(name='Missing')
-    BookStatus.objects.create(name='Lost')
     BookStatus.objects.create(name='Damaged')
     BookStatus.objects.create(name='Being Repaired')
+    BookStatus.objects.create(name='Lost')
+    BookStatus.objects.create(name='Renewed')
     BookStatus.objects.create(name='Reference Only')
-    BookStatus.objects.create(name='Reserved')
 
 
 

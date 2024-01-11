@@ -38,8 +38,10 @@ class CreateView(generic.CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        if not(form.errors):
-            AdjustStatusOfBook(form.cleaned_data['book'].pk)
+        #import ipdb; ipdb.set_trace()
+
+        #AdjustStatusOfBook(form.instance.book.pk)
+        form.instance.book.AdjustStatusOfBook()
 
         return response
     
@@ -67,8 +69,9 @@ class UpdateView(generic.UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        if not(form.errors):
-            AdjustStatusOfBook(form.cleaned_data['book'].pk)
+        form.instance.book.AdjustStatusOfBook()
+
+        #import ipdb; ipdb.set_trace()
 
         return response
     
