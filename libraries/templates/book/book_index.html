@@ -4,6 +4,19 @@
 {% block create_link %}{% url 'libraries:book_create' %}{% endblock %}
 {% block model_name%}book{% endblock%}
 
+{% block filter_inputs %}
+    <div class="input-group mb-3">
+        <div class="input-group-append">
+            <select class="form-select" id="filterField" onchange="filterBooks()">
+                <option value="title">Title</option>
+                <option value="gender__name">Gender</option>
+                <option value="status__name">Status</option>
+            </select>
+        </div>
+        <input type="text" class="form-control" id="filterValue" placeholder="Enter filter value" oninput="filterBooks()">
+    </div>
+{% endblock%}
+
 {% block table_headers %}
     <th>Title</th>
     <th>Gender</th>

@@ -11,7 +11,6 @@ from libraries.forms.library_forms import LibraryForm
 from libraries.forms.book_forms import BookForm
 from persons.forms.customer_forms import CustomerForm
 from persons.forms.employee_forms import EmployeeForm
-from libraries.functions import AdjustStatusOfBook
 
 class IndexView(generic.ListView):
     template_name = 'rent/rent_index.html'

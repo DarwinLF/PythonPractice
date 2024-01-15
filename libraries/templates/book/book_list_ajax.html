@@ -1,0 +1,12 @@
+{% for item in model_list %}
+    <tr>
+        <td>{{item.title}}</td>
+        <td>{{item.gender}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.author}}</td>
+        <td>{{item.library}}</td>
+        <td>{{item.status}}</td>
+        <td><a class="btn btn-outline-primary" href="{% block detail_link %}{% url 'main'%}{% endblock %}">Detail</a></td>
+        <td><a class="btn btn-outline-primary" href="{% block edit_link %}{% url 'main'%}{% endblock %}">Edit</a></td>
+    </tr>
+{% endfor %}
