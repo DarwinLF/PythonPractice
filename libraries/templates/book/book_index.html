@@ -39,3 +39,29 @@
 {% block edit_link %}{% url 'libraries:book_update' item.id%}{% endblock %}
 
 {% block no_list %}books{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        function filterBooks() {
+            var filterValue = $("#filterValue").val().toLowerCase();
+            var filterField = $("#filterField").val();
+
+            var libraryId = {{ library_id|default:"null" }};
+
+            var url = libraryId ? "/libraries/library/" + libraryId + "/book/" : 
+                                    "/libraries/book/";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: {
+                    filter_value: filterValue,
+                    filter_field: filterField
+                },
+                success: function (data) {
+                    $('#model-table tbody').html(data.html);
+                }
+            });
+        }
+    </script>
+{% endblock %}

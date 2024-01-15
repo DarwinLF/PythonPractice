@@ -14,7 +14,12 @@ class IndexView(generic.ListView):
     context_object_name = 'model_list'
 
     def get_queryset(self):
-        return Customer.objects.all()
+        library_id = self.kwargs.get('library_id')
+
+        if library_id:
+            return Customer.objects.filter(library_id=library_id)
+        else:
+            return Customer.objects.all()
     
 class CreateView(generic.CreateView):
     model = Customer

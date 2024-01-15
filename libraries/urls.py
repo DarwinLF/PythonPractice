@@ -1,17 +1,25 @@
 from django.urls import path
 
 from .views import libraries_views, library_views, book_views, rent_views, ajax_views
+from persons.views import employee_views, customer_views
 
 app_name = 'libraries'
 urlpatterns = [
      path('', libraries_views.LibrariesLinks, name='libraries_index'),
-     path('library/', library_views.IndexView.as_view(), name='library_index'),
+     path('library/', library_views.IndexView.as_view(), 
+          name='library_index'),
      path('library/createLibrary/', library_views.CreateView.as_view(), 
           name='library_create'),
      path('library/<int:pk>/', library_views.DetailView.as_view(), 
           name='library_detail'),
-     path('library/<int:pk>/updateLibrary', library_views.UpdateView.as_view(), 
-          name='library_update'),
+     path('library/<int:pk>/updateLibrary', 
+          library_views.UpdateView.as_view(), name='library_update'),
+     path('library/<int:library_id>/book/', book_views.IndexView.as_view(), 
+          name='library_books'),
+     path('library/<int:library_id>/employee/', 
+          employee_views.IndexView.as_view(), name='library_employees'),
+     path('library/<int:library_id>/customer/', 
+          customer_views.IndexView.as_view(), name='library_customers'),
      path('book/', book_views.IndexView.as_view(), name='book_index'),
      path('book/createBook/', book_views.CreateView.as_view(), 
           name='book_create'),

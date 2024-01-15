@@ -48,24 +48,3 @@
     </div>
     
 {% endblock %}
-
-{% block extra_scripts %}
-    <script>
-        function filterBooks() {
-            var filterValue = $("#filterValue").val().toLowerCase();
-            var filterField = $("#filterField").val();
-
-            $.ajax({
-                url: "/libraries/book/",
-                type: "GET",
-                data: {
-                    filter_value: filterValue,
-                    filter_field: filterField
-                },
-                success: function (data) {
-                    $('#model-table tbody').html(data.html);
-                }
-            });
-        }
-    </script>
-{% endblock %}

@@ -17,6 +17,7 @@ class IndexView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
+        library_id = self.kwargs.get('library_id')
         filter_value = self.request.GET.get('filter_value', '')
         filter_field = self.request.GET.get('filter_field', 'title')
 
@@ -24,9 +25,10 @@ class IndexView(generic.ListView):
             f"{filter_field}__icontains": filter_value
         }
 
-        #import ipdb; ipdb.set_trace()
-
-        return Book.objects.filter(**filter_kwargs)
+        if library_id:
+            return Book.objects.filter(library_id=library_id, **filter_kwargs)
+        else:
+            return Book.objects.filter(**filter_kwargs)
     
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -44,6 +46,7 @@ class IndexView(generic.ListView):
         context['model_list'] = model_list
         context['filter_value'] = self.request.GET.get('filter_value', '')
         context['filter_field'] = self.request.GET.get('filter_field', 'title')
+        context['library_id'] = self.kwargs['library_id']
         return context
     
     def render_to_response(self, context, **response_kwargs):

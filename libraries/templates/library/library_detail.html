@@ -3,22 +3,13 @@
 {% block extra_fields %}
     <p class="card-text">Location: {{ model.location }}</p>
     <p class="card-text">RNC: {{ model.rnc }}</p>
+
     <h5 class="card-subtitle mb-2 mt-4">Books:</h5>
-    <ul class="list-group bg-dark border-light">
-        {% for item in model.books.all %}
-            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'libraries:book_detail' item.id %}">{{item}}</a>
-        {% endfor %}
-    </ul>
+    <a href="{% url 'libraries:library_books' library_id=model.id %}" class="btn btn-primary">View Books</a>
+
     <h5 class="card-subtitle mb-2 mt-4">Employees:</h5>
-    <ul class="list-group bg-dark border-light">
-        {% for item in model.employees.all %}
-            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'persons:employee_detail' item.id %}">{{item}}</a>
-        {% endfor %}
-    </ul>
+    <a href="{% url 'libraries:library_employees' library_id=model.id %}" class="btn btn-primary">View Employees</a>
+
     <h5 class="card-subtitle mb-2 mt-4">Customers:</h5>
-    <ul class="list-group bg-dark border-light">
-        {% for item in model.customers.all %}
-            <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{% url 'persons:customer_detail' item.id %}">{{item}}</a>
-        {% endfor %}
-    </ul>
+    <a href="{% url 'libraries:library_customers' library_id=model.id %}" class="btn btn-primary">View Customers</a>
 {% endblock %}
