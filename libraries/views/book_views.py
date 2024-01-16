@@ -46,7 +46,8 @@ class IndexView(generic.ListView):
         context['model_list'] = model_list
         context['filter_value'] = self.request.GET.get('filter_value', '')
         context['filter_field'] = self.request.GET.get('filter_field', 'title')
-        context['library_id'] = self.kwargs['library_id']
+        if 'library_id' in self.kwargs:
+            context['library_id'] = self.kwargs['library_id']
         return context
     
     def render_to_response(self, context, **response_kwargs):
