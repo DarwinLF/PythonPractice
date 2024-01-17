@@ -1,6 +1,7 @@
 {% extends 'main/detail.html' %}
 
 {% block extra_fields %}
+    <p class="card-text">Customer Detail: <a class="btn btn-primary" href="{% url 'persons:customer_detail' model.customer.id%}">Go to</a></p>
     <p class="card-text">Book: <a href="{% url 'libraries:book_detail' model.book.id%}">{{ model.book }}</a></p>
     <p class="card-text">Amount: {{ model.amount_to_rent }}</p>
     <p class="card-text">Employee: <a href="{% url 'persons:employee_detail' model.employee.id%}">{{ model.employee }}</a></p>

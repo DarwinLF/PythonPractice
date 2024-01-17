@@ -31,6 +31,9 @@ class RentForm(forms.ModelForm):
         else: #the model is created
             books_available = data['book'].available()
 
+            if not data['customer'].IsRentAvailable():
+                self.add_error('customer', 'The customer can\'t rent')
+
         if amount_to_rent <= 0:
             self.add_error('amount_to_rent', 'The amount to rent should be greater that 0')
 

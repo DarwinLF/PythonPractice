@@ -7,17 +7,15 @@
 {% block table_headers %}
     <th>First Name</th>
     <th>Last Name</th>
-    <th>RNC</th>
-    <th>Age</th>
     <th>Library</th>
+    <th>Status</th>
 {% endblock %}
 
 {% block table_fields%}
     <td>{{item.first_name}}</td>
     <td>{{item.last_name}}</td>
-    <td>{{item.rnc}}</td>
-    <td>{{item.age}}</td>
     <td>{{item.library}}</td>
+    <td>{{item.status}}</td>
 {% endblock %}
 
 {% block detail_link %}{% url 'persons:customer_detail' item.id%}{% endblock %}

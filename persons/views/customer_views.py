@@ -20,6 +20,18 @@ class IndexView(generic.ListView):
             return Customer.objects.filter(library_id=library_id)
         else:
             return Customer.objects.all()
+        
+    def get(self, request, *args, **kwargs):
+        # Get the original queryset
+        queryset = self.get_queryset()
+
+        # Modify each instance using your_model_method
+        modified_instances = [instance.CheckRentAvailability() for instance in queryset]
+
+        # Override the object_list attribute with the modified instances
+        self.object_list = modified_instances
+
+        return super().get(request, *args, **kwargs)
     
 class CreateView(generic.CreateView):
     model = Customer
@@ -66,3 +78,12 @@ class DetailView(generic.DetailView):
     model = Customer
     template_name = 'customer/customer_detail.html'
     context_object_name = 'model'
+
+    def get_object(self, queryset=None):
+        # Get the original object using the parent method
+        obj = super().get_object(queryset=queryset)
+
+        # Modify the object using your_model_method
+        modified_object = obj.CheckRentAvailability()
+
+        return modified_object
