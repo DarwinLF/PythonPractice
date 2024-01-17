@@ -8,13 +8,14 @@ class RentForm(forms.ModelForm):
     class Meta:
         model = Rent
         fields = ['book', 'customer', 'employee', 'library',
-                  'amount_to_rent', 'due_date', 'status']
+                  'amount_to_rent', 'rent_date', 'due_date', 'status']
         widgets = {
             'book': forms.Select(attrs={'class': 'form-control', 'id': 'bookSelect'}),
             'customer': forms.Select(attrs={'class': 'form-control', 'id': 'customerSelect'}),
             'employee': forms.Select(attrs={'class': 'form-control', 'id': 'employeeSelect'}),
             'library': forms.Select(attrs={'class': 'form-control', 'id': 'librarySelect'}),
             'amount_to_rent': forms.NumberInput(attrs={'class': 'form-control'}),
+            'rent_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -26,11 +27,8 @@ class RentForm(forms.ModelForm):
         instance_pk = self.instance.pk if self.instance else None
 
         if instance_pk: #the model is updated
-            data['modified_date'] = date.today()
             books_available = data['book'].available(instance_pk)
         else: #the model is created
-            data['created_date'] = date.today()
-            data['modified_date'] = date.today()
             books_available = data['book'].available()
 
         if amount_to_rent <= 0:

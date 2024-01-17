@@ -5,8 +5,8 @@
     <p class="card-text">Amount: {{ model.amount_to_rent }}</p>
     <p class="card-text">Employee: <a href="{% url 'persons:employee_detail' model.employee.id%}">{{ model.employee }}</a></p>
     <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
-    <p class="card-text">Rent Date: {{ model.rent_date }}</p>
     <p class="card-text">Status: {{ model.status }}</p>
+    <p class="card-text">Rent Date: {{ model.rent_date }}</p>
     <p class="card-text">Created Date: {{ model.created_date }}</p>
     <p class="card-text">Modified Date: {{ model.modified_date }}</p>
 {% endblock %}

@@ -26,5 +26,8 @@ class Rent(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.rent_date = date.today()
+            self.created_date = date.today()
+            self.modified_date = date.today()
+        else:
+            self.modified_date = date.today()
         super().save(*args, **kwargs)
