@@ -25,9 +25,12 @@ class RentForm(forms.ModelForm):
         due_date = data['due_date']
         instance_pk = self.instance.pk if self.instance else None
 
-        if instance_pk:
+        if instance_pk: #the model is updated
+            data['modified_date'] = date.today()
             books_available = data['book'].available(instance_pk)
-        else:
+        else: #the model is created
+            data['created_date'] = date.today()
+            data['modified_date'] = date.today()
             books_available = data['book'].available()
 
         if amount_to_rent <= 0:
