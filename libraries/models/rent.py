@@ -14,8 +14,12 @@ class Rent(models.Model):
     library = models.ForeignKey('libraries.Library', 
                                 on_delete = models.PROTECT, 
                                 related_name = 'rents')
+    created_date = models.DateField()
+    modified_date = models.DateField()
     rent_date = models.DateField()
     due_date = models.DateField()
+    status = models.ForeignKey('libraries.RentStatus', 
+                               on_delete = models.PROTECT)
 
     def __str__(self):
         return f'{self.customer} - due date: {self.due_date}'

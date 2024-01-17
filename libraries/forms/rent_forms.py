@@ -8,7 +8,7 @@ class RentForm(forms.ModelForm):
     class Meta:
         model = Rent
         fields = ['book', 'customer', 'employee', 'library',
-                  'amount_to_rent', 'due_date']
+                  'amount_to_rent', 'due_date', 'status']
         widgets = {
             'book': forms.Select(attrs={'class': 'form-control', 'id': 'bookSelect'}),
             'customer': forms.Select(attrs={'class': 'form-control', 'id': 'customerSelect'}),
@@ -16,6 +16,7 @@ class RentForm(forms.ModelForm):
             'library': forms.Select(attrs={'class': 'form-control', 'id': 'librarySelect'}),
             'amount_to_rent': forms.NumberInput(attrs={'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

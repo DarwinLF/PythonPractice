@@ -6,6 +6,7 @@
     <p class="card-text">Employee: <a href="{% url 'persons:employee_detail' model.employee.id%}">{{ model.employee }}</a></p>
     <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
     <p class="card-text">Rent Date: {{ model.rent_date }}</p>
+    <p class="card-text">Status: {{ model.status }}</p>
 {% endblock %}
 
 {% block edit_link %}{% url 'libraries:rent_update' model.id %}{% endblock %}

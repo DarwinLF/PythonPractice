@@ -6,10 +6,12 @@ from ..models import Customer
 class CustomerForm(PersonForm):
     class Meta(PersonForm.Meta):
         model = Customer
-        fields = PersonForm.Meta.fields + ['library']
+        fields = PersonForm.Meta.fields + ['library', 'credit_time', 'status']
         widgets = {
             **PersonForm.Meta.widgets,
             'library': forms.Select(attrs={'class': 'form-control'}),
+            'credit_time': forms.NumberInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
