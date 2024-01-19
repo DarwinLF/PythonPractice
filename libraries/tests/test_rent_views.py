@@ -3,20 +3,22 @@ from django.urls import reverse
 
 from datetime import date
 
-from libraries.models import Rent, Book, Library, BookStatus, BookGenders
-from persons.models import Author, Customer, Employee
+from libraries.models import Rent, RentStatus, Book, Library, BookStatus, BookGenders
+from persons.models import Author, Customer, CustomerStatus, Employee
 
 class IndexViewTests(TestCase):
     def setUp(self):
-        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
-        self.customer1 = Customer.objects.create(first_name='Darwin', 
-                                                last_name='Lantigua', 
-                                                rnc='402-3070960-8', 
-                                                birthday=date(2000, 1, 8), 
-                                                library=self.library1)
+        self.customerStatus = CustomerStatus.objects.all()
+        self.customer1 = Customer.objects.create(first_name = 'Darwin', 
+                                                last_name ='Lantigua', 
+                                                rnc = '402-3070960-8', 
+                                                birthday = date(2000, 1, 8), 
+                                                library = self.library1,
+                                                credit_time = 7,
+                                                status=self.customerStatus[0])
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
@@ -28,23 +30,27 @@ class IndexViewTests(TestCase):
                                              birthday = date(2000, 1, 8),
                                              alias = 'Esnaire'
                                              )
-        self.status = BookStatus.objects.all()
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
-                                         gender = self.genders[0],
+                                         gender = self.bookGenders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
                                          author = self.author1,
                                          library = self.library1,
-                                         status = self.status[0]
+                                         status = self.bookStatus[0]
                                          )
+        self.rentStatus = RentStatus.objects.all()
         self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
-                                         due_date = date(2025, 6, 12)
+                                         rent_date = date(2024, 1, 18),
+                                         due_date = date(2025, 6, 12),
+                                         status = self.rentStatus[0]
                                          )
         self.url = reverse('libraries:rent_index')
         self.client = Client()
@@ -58,27 +64,32 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'libreria1')
         self.assertTemplateUsed(response, 'rent/rent_index.html')
 
-def create_rent(book, amount_to_rent, customer, employee, library, due_date):
+def create_rent(bookPk, amount_to_rent, customerPk, employeePk, libraryPk, 
+                rent_date, due_date, statusPk):
     return {
-        'book': book,
+        'book': bookPk,
         'amount_to_rent': amount_to_rent,
-        'customer': customer,
-        'employee': employee,
-        'library': library,
+        'customer': customerPk,
+        'employee': employeePk,
+        'library': libraryPk,
+        'rent_date': rent_date,
         'due_date': due_date,
+        'status': statusPk
     }
 
 class CreateViewTests(TestCase):
     def setUp(self):
-        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.customerStatus = CustomerStatus.objects.all()
         self.customer1 = Customer.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
                                                 birthday=date(2000, 1, 8), 
-                                                library=self.library1)
+                                                library=self.library1,
+                                                credit_time = 7,
+                                                status=self.customerStatus[0])
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
@@ -90,18 +101,20 @@ class CreateViewTests(TestCase):
                                              birthday = date(2000, 1, 8),
                                              alias = 'Esnaire'
                                              )
-        self.status = BookStatus.objects.all()
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
-                                         gender = self.genders[0],
+                                         gender = self.bookGenders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
                                          author = self.author1,
                                          library = self.library1,
-                                         status = self.status[0]
+                                         status = self.bookStatus[0]
                                          )
+        self.rentStatus = RentStatus.objects.all()
         self.url = reverse('libraries:rent_create')
         self.client = Client()
 
@@ -113,9 +126,11 @@ class CreateViewTests(TestCase):
 
     def test_valid_data_post(self):
         data = create_rent(self.book1.pk, 1, self.customer1.pk, 
-                           self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           self.employee1.pk, self.library1.pk, 
+                           date(2024, 1, 18), date(2025, 6, 12), 
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
+        #import ipdb; ipdb.set_trace()
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
 
@@ -127,14 +142,16 @@ class CreateViewTests(TestCase):
     def test_past_due_date(self):
         data = create_rent(self.book1.pk, 1, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2023, 6, 12))
+                           date(2024, 1, 18), date(2023, 6, 12),
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(Rent.objects.count(), 0)
 
     def test_more_books_that_available(self):
         data = create_rent(self.book1.pk, 6, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           date(2024, 1, 18), date(2025, 6, 12),
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Rent.objects.count(), 0)
@@ -143,7 +160,8 @@ class CreateViewTests(TestCase):
     def test_amount_less_that_1(self):
         data = create_rent(self.book1.pk, 0, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           date(2024, 1, 18), date(2025, 6, 12),
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_create_form.html')
@@ -152,7 +170,8 @@ class CreateViewTests(TestCase):
     def test_run_out_of_books(self):
         data = create_rent(self.book1.pk, 5, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           date(2024, 1, 18), date(2025, 6, 12),
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
@@ -164,7 +183,8 @@ class CreateViewTests(TestCase):
     def test_dont_run_out_of_books(self):
         data = create_rent(self.book1.pk, 4, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           date(2024, 1, 18), date(2025, 6, 12),
+                           self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
@@ -175,15 +195,17 @@ class CreateViewTests(TestCase):
 
 class UpdateViewTests(TestCase):
     def setUp(self):
-        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.customerStatus = CustomerStatus.objects.all()
         self.customer1 = Customer.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
-                                                rnc='402-3070960-8', 
-                                                birthday=date(2000, 1, 8), 
-                                                library=self.library1)
+                                                rnc = '402-3070960-8', 
+                                                birthday = date(2000, 1, 8), 
+                                                library = self.library1,
+                                                credit_time = 7,
+                                                status=self.customerStatus[0])
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
@@ -195,23 +217,27 @@ class UpdateViewTests(TestCase):
                                              birthday = date(2000, 1, 8),
                                              alias = 'Esnaire'
                                              )
-        self.status = BookStatus.objects.all()
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
-                                         gender = self.genders[0],
+                                         gender = self.bookGenders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
                                          author = self.author1,
                                          library = self.library1,
-                                         status = self.status[0]
+                                         status = self.bookStatus[0]
                                          )
+        self.rentStatus = RentStatus.objects.all()
         self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
-                                         due_date = date(2025, 6, 12)
+                                         rent_date = date(2024, 1, 18),
+                                         due_date = date(2025, 6, 12),
+                                         status = self.rentStatus[0]
                                          )
         self.url = reverse('libraries:rent_update', args=[self.rent1.pk])
         self.client = Client()
@@ -223,9 +249,10 @@ class UpdateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_update.html')
     
     def test_update_to_past_due_date(self):
-        updated_data = create_rent(self.book1.pk, 1, self.customer1.pk, 
-                                   self.employee1.pk, self.library1.pk,
-                                   date(2023, 6, 12))
+        updated_data = create_rent(self.book1.pk, self.rent1.amount_to_rent, 
+                                   self.customer1.pk, self.employee1.pk, 
+                                   self.library1.pk, self.rent1.rent_date, 
+                                   date(2023, 6, 12), self.rent1.status.pk)
         response = self.client.post(self.url, updated_data, follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -234,7 +261,8 @@ class UpdateViewTests(TestCase):
     def test_update_to_more_books_that_available(self):
         data = create_rent(self.book1.pk, 6, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           self.rent1.due_date)
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rent1.status.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_update.html')
@@ -245,7 +273,8 @@ class UpdateViewTests(TestCase):
     def test_update_to_books_that_available(self):
         data = create_rent(self.book1.pk, 5, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           self.rent1.due_date)
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rent1.status.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
@@ -256,7 +285,8 @@ class UpdateViewTests(TestCase):
     def test_amount_less_that_1(self):
         data = create_rent(self.book1.pk, 0, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           self.rent1.due_date)
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rent1.status.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_update.html')
@@ -267,7 +297,8 @@ class UpdateViewTests(TestCase):
     def test_update_and_run_out_of_books(self):
         data = create_rent(self.book1.pk, 5, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rent1.status.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
@@ -279,7 +310,8 @@ class UpdateViewTests(TestCase):
     def test_update_and_dont_run_out_of_books(self):
         data = create_rent(self.book1.pk, 4, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2025, 6, 12))
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rent1.status.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
@@ -290,15 +322,17 @@ class UpdateViewTests(TestCase):
 
 class DetailViewTests(TestCase):
     def setUp(self):
-        self.genders = BookGenders.objects.all()
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.customerStatus = CustomerStatus.objects.all()
         self.customer1 = Customer.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
                                                 birthday=date(2000, 1, 8), 
-                                                library=self.library1)
+                                                library=self.library1,
+                                                credit_time = 7,
+                                                status=self.customerStatus[0])
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
@@ -310,24 +344,27 @@ class DetailViewTests(TestCase):
                                              birthday = date(2000, 1, 8),
                                              alias = 'Esnaire'
                                              )
-        self.status = BookStatus.objects.all()
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
         self.book1 = Book.objects.create(title = 'Our love is live',
                                          published_date = date(2020, 6, 2),
                                          isbn = '123-1-123-12345-1',
-                                         gender = self.genders[0],
+                                         gender = self.bookGenders[0],
                                          quantity = 5,
                                          rent_price = 300,
                                          sale_price = 500,
                                          author = self.author1,
                                          library = self.library1,
-                                         status = self.status[0]
+                                         status = self.bookStatus[0]
                                          )
+        self.rentStatus = RentStatus.objects.all()
         self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
                                          rent_date = date(2024, 1, 7),
-                                         due_date = date(2024, 6, 12)
+                                         due_date = date(2024, 6, 12),
+                                         status = self.rentStatus[0]
                                          )
         self.url = reverse('libraries:rent_detail', args=[self.rent1.pk])
         self.client = Client()

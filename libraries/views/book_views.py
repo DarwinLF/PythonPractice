@@ -33,6 +33,8 @@ class IndexView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
+        #context['model_list'] = context['model_list'].order_by('title')
+
         paginator = Paginator(context['model_list'], self.paginate_by)
         page = self.request.GET.get('page')
 
