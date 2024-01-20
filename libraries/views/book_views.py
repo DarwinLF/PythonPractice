@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 
 from libraries.models import Book
-from libraries.forms.book_forms import BookForm, BookFilterForm
+from libraries.forms.book_forms import BookForm
 from libraries.forms.library_forms import LibraryForm
 from persons.forms.author_forms import AuthorForm
 

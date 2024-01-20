@@ -5,7 +5,7 @@ class CustomerService:
     def IsRentAvailable(customerId):
         from persons.models import Customer
         customer = Customer.objects.get(pk=customerId)
-        customer = CustomerService.CheckRentAvailability(customer)
+        customer = customer.CheckRentAvailability()
 
         if customer.status.name == 'Active Borrower':
             return True
@@ -20,8 +20,8 @@ class CustomerService:
             from persons.models import CustomerStatus
             oldest_rent_date = rents_due_for_customer.earliest('rent_date').rent_date
             
-            if (oldest_rent_date - date.today()).days > customer.credit_time:
-                customer.status = CustomerStatus.objects.get(pk=5)
+            if (date.today() - oldest_rent_date).days > customer.credit_time:
+                customer.status = CustomerStatus.objects.get(pk=3)
             else:
                 customer.status = CustomerStatus.objects.get(pk=1)
 

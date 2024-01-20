@@ -29,11 +29,11 @@ class Book(models.Model):
 
     def rented(self, rent_pk):
         if rent_pk == 0:
-            return self.library.rents.aggregate(
+            return self.library.rents.exclude(status__name = 'Returned').aggregate(
                 total_rented=models.Sum('amount_to_rent'))['total_rented'] \
                     or 0
         else:
-            return self.library.rents.exclude(pk=rent_pk).aggregate(
+            return self.library.rents.exclude(pk=rent_pk).exclude(status__name = 'Returned').aggregate(
                 total_rented=models.Sum('amount_to_rent'))['total_rented'] \
                     or 0
     

@@ -4,23 +4,48 @@ from django.db import IntegrityError, transaction
 
 from datetime import date
 
-from persons.models import Customer, CustomerStatus
-from libraries.models import Library
+from persons.models import Customer, CustomerStatus, Employee, Author
+from libraries.models import Library, Rent, RentStatus, Book, BookGenders, BookStatus
 
 class IndexViewTests(TestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
+        self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
         self.customerStatus = CustomerStatus.objects.all()
-        self.customer = Customer.objects.create(first_name = 'Darwin',
+        self.customer1 = Customer.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
                                              birthday = date(2000, 1, 8),
-                                             library = self.library,
+                                             library = self.library1,
                                              credit_time = 7,
                                              status = self.customerStatus[0]
                                              )
+        self.employee1 = Employee.objects.create(first_name='Darwin', 
+                                                last_name='Lantigua', 
+                                                rnc='402-3070960-8', 
+                                                birthday=date(2000, 1, 8), 
+                                                library=self.library1)
+        self.author1 = Author.objects.create(first_name = 'Darwin',
+                                             last_name = 'Lantigua',
+                                             rnc = '402-3070960-8',
+                                             birthday = date(2000, 1, 8),
+                                             alias = 'Esnaire'
+                                             )
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
+        self.book1 = Book.objects.create(title = 'Our love is live',
+                                         published_date = date(2020, 6, 2),
+                                         isbn = '123-1-123-12345-1',
+                                         gender = self.bookGenders[0],
+                                         quantity = 5,
+                                         rent_price = 300,
+                                         sale_price = 500,
+                                         author = self.author1,
+                                         library = self.library1,
+                                         status = self.bookStatus[0]
+                                         )
+        self.rentStatus = RentStatus.objects.all()
         self.url = reverse('persons:customer_index')
         self.client = Client()
 
@@ -32,6 +57,24 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'Lantigua')
         self.assertContains(response, 'libreria1')
         self.assertContains(response, 'Active Borrower')
+        self.assertTemplateUsed(response, 'customer/customer_index.html')
+
+    def test_customer_with_overdue_rent(self):
+        rent = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+                                   customer = self.customer1, 
+                                   employee = self.employee1, 
+                                   library = self.library1,
+                                   rent_date = date(2023, 10, 18),
+                                   due_date = date(2025, 6, 12),
+                                   status = self.rentStatus[0])
+        
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Darwin')
+        self.assertContains(response, 'Lantigua')
+        self.assertContains(response, 'libreria1')
+        self.assertContains(response, 'Overdue Materials')
         self.assertTemplateUsed(response, 'customer/customer_index.html')
 
 def create_customer(first_name, last_name, rnc, birthday, libraryPk, 
@@ -240,18 +283,44 @@ class UpdateViewTests(TestCase):
 
 class DetailViewTests(TestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
+        self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
         self.customerStatus = CustomerStatus.objects.all()
-        self.customer = Customer.objects.create(first_name = 'Darwin', 
-                                                last_name = 'Lantigua', 
-                                                rnc = '402-3070960-8', 
-                                                birthday = date(2000, 1, 8), 
-                                                library = self.library,
-                                                credit_time = 7,
-                                                status=self.customerStatus[0])
-        self.url = reverse('persons:customer_detail', args=[self.customer.pk])
+        self.customer1 = Customer.objects.create(first_name = 'Darwin',
+                                             last_name = 'Lantigua',
+                                             rnc = '402-3070960-8',
+                                             birthday = date(2000, 1, 8),
+                                             library = self.library1,
+                                             credit_time = 7,
+                                             status = self.customerStatus[0]
+                                             )
+        self.employee1 = Employee.objects.create(first_name='Darwin', 
+                                                last_name='Lantigua', 
+                                                rnc='402-3070960-8', 
+                                                birthday=date(2000, 1, 8), 
+                                                library=self.library1)
+        self.author1 = Author.objects.create(first_name = 'Darwin',
+                                             last_name = 'Lantigua',
+                                             rnc = '402-3070960-8',
+                                             birthday = date(2000, 1, 8),
+                                             alias = 'Esnaire'
+                                             )
+        self.bookGenders = BookGenders.objects.all()
+        self.bookStatus = BookStatus.objects.all()
+        self.book1 = Book.objects.create(title = 'Our love is live',
+                                         published_date = date(2020, 6, 2),
+                                         isbn = '123-1-123-12345-1',
+                                         gender = self.bookGenders[0],
+                                         quantity = 5,
+                                         rent_price = 300,
+                                         sale_price = 500,
+                                         author = self.author1,
+                                         library = self.library1,
+                                         status = self.bookStatus[0]
+                                         )
+        self.rentStatus = RentStatus.objects.all()
+        self.url = reverse('persons:customer_detail', args=[self.customer1.pk])
         self.client = Client()
     
     def test_get_view(self):
@@ -259,4 +328,19 @@ class DetailViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_detail.html')
-        self.assertEqual(response.context['model'], self.customer)
+        self.assertEqual(response.context['model'], self.customer1)
+
+    def test_customer_with_overdue_rent(self):
+        rent = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+                                   customer = self.customer1, 
+                                   employee = self.employee1, 
+                                   library = self.library1,
+                                   rent_date = date(2023, 10, 18),
+                                   due_date = date(2025, 6, 12),
+                                   status = self.rentStatus[0])
+        
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer/customer_detail.html')
+        self.assertContains(response, 'Overdue Materials')

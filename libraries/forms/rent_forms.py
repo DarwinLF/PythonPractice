@@ -23,6 +23,7 @@ class RentForm(forms.ModelForm):
     def clean(self):
         data = self.cleaned_data
         amount_to_rent = data['amount_to_rent']
+        rent_date = data['rent_date']
         due_date = data['due_date']
         instance_pk = self.instance.pk if self.instance else None
 
@@ -39,6 +40,9 @@ class RentForm(forms.ModelForm):
 
         if amount_to_rent > books_available:
             self.add_error('amount_to_rent', 'There are not enough books available')
+
+        if rent_date > date.today():
+            self.add_error('rent_date', 'The rent date can\'t be in the future')
 
         if due_date < date.today():
             self.add_error('due_date', 'The due date can\'t be in the past')

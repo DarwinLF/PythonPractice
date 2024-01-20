@@ -88,7 +88,7 @@ class CreateViewTests(TestCase):
                                                 rnc='402-3070960-8', 
                                                 birthday=date(2000, 1, 8), 
                                                 library=self.library1,
-                                                credit_time = 7,
+                                                credit_time = 30,
                                                 status=self.customerStatus[0])
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
@@ -192,6 +192,59 @@ class CreateViewTests(TestCase):
 
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.status.name, 'Available')
+
+    def test_with_a_overdue_rent(self):
+        data1 = create_rent(self.book1.pk, 1, self.customer1.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2023, 10, 20), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data1, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+        self.customer1.refresh_from_db()
+        self.assertEqual(self.customer1.status.name, 'Active Borrower')
+
+        data2 = create_rent(self.book1.pk, 1, self.customer1.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 20), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data2, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        #import ipdb; ipdb.set_trace()
+        self.assertTemplateUsed(response, 'rent/rent_create_form.html')
+        self.assertEqual(Rent.objects.count(), 1)
+        self.customer1.refresh_from_db()
+        self.assertEqual(self.customer1.status.name, 'Overdue Materials')
+
+    #change the rent_date of data1 in the future
+    def test_without_a_overdue_rent(self):
+        data1 = create_rent(self.book1.pk, 1, self.customer1.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 10), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data1, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+        self.customer1.refresh_from_db()
+        self.assertEqual(self.customer1.status.name, 'Active Borrower')
+
+        data2 = create_rent(self.book1.pk, 1, self.customer1.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 15), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data2, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        #import ipdb; ipdb.set_trace()
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 2)
+        self.customer1.refresh_from_db()
+        self.assertEqual(self.customer1.status.name, 'Active Borrower')
 
 class UpdateViewTests(TestCase):
     def setUp(self):
@@ -319,6 +372,47 @@ class UpdateViewTests(TestCase):
 
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.status.name, 'Available')
+
+    def test_update_run_out_of_books_to_dont_run_out(self):
+        url =  reverse('libraries:rent_create')
+        data1 = create_rent(self.book1.pk, 4, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2024, 1, 18), date(2025, 6, 12),
+                           self.rentStatus[0].pk)
+        response = self.client.post(url, data1, follow=True)
+        
+        #import ipdb; ipdb.set_trace()
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Spent')
+
+        rent2 = Rent.objects.last()
+
+        url =  reverse('libraries:rent_update', args=[rent2.pk])
+        data2 = create_rent(self.book1.pk, 3, self.customer1.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           rent2.rent_date, rent2.due_date,
+                           rent2.status.pk)
+        response = self.client.post(url, data2, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 2)
+
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.status.name, 'Available')
+
+    def test_return_a_book(self):
+        data = create_rent(self.rent1.book.pk, self.rent1.amount_to_rent, self.rent1.customer.pk, 
+                           self.rent1.employee.pk, self.rent1.library.pk,
+                           self.rent1.rent_date, self.rent1.due_date,
+                           self.rentStatus[4].pk)
+        response = self.client.post(self.url, data, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 1)
+        self.book1.refresh_from_db()
+        #import ipdb; ipdb.set_trace()
+        self.assertEqual(self.book1.available(), 5)
 
 class DetailViewTests(TestCase):
     def setUp(self):
