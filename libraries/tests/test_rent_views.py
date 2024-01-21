@@ -78,6 +78,7 @@ def create_rent(bookPk, amount_to_rent, customerPk, employeePk, libraryPk,
     }
 
 class CreateViewTests(TestCase):
+    #change the rent_date in the future
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
@@ -193,7 +194,7 @@ class CreateViewTests(TestCase):
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.status.name, 'Available')
 
-    def test_with_a_overdue_rent(self):
+    def test_with_rent_after_credit_time(self):
         data1 = create_rent(self.book1.pk, 1, self.customer1.pk, 
                             self.employee1.pk, self.library1.pk,
                             date(2023, 10, 20), date(2024, 6, 12),
@@ -204,7 +205,8 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_index.html')
         self.assertEqual(Rent.objects.count(), 1)
         self.customer1.refresh_from_db()
-        self.assertEqual(self.customer1.status.name, 'Active Borrower')
+        self.assertEqual(self.customer1.status.name, 
+                         'Suspended Borrowing Privileges')
 
         data2 = create_rent(self.book1.pk, 1, self.customer1.pk, 
                             self.employee1.pk, self.library1.pk,
@@ -217,10 +219,10 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_create_form.html')
         self.assertEqual(Rent.objects.count(), 1)
         self.customer1.refresh_from_db()
-        self.assertEqual(self.customer1.status.name, 'Overdue Materials')
+        self.assertEqual(self.customer1.status.name, 
+                         'Suspended Borrowing Privileges')
 
-    #change the rent_date of data1 in the future
-    def test_without_a_overdue_rent(self):
+    def test_without_rent_after_credit_time(self):
         data1 = create_rent(self.book1.pk, 1, self.customer1.pk, 
                             self.employee1.pk, self.library1.pk,
                             date(2024, 1, 10), date(2024, 6, 12),
@@ -246,6 +248,76 @@ class CreateViewTests(TestCase):
         self.customer1.refresh_from_db()
         self.assertEqual(self.customer1.status.name, 'Active Borrower')
 
+    def test_customer_with_status_not_equal_to_active_borrower_or_suspended(self):
+        customer2 = Customer.objects.create(first_name='Jackson', 
+                                            last_name='Jonson', 
+                                            rnc='402-3070960-7',
+                                            birthday=date(1998, 2, 8), 
+                                            library=self.library1,
+                                            credit_time = 30,
+                                            status=self.customerStatus[2])
+        
+        data1 = create_rent(self.book1.pk, 1, customer2.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 10), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data1, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_create_form.html')
+        self.assertEqual(Rent.objects.count(), 0)
+
+    def test_customer_with_status_not_equal_to_active_borrower_or_suspended_and_past_rent(self):
+        customer2 = Customer.objects.create(first_name='Jackson', 
+                                            last_name='Jonson', 
+                                            rnc='402-3070960-7',
+                                            birthday=date(1998, 2, 8), 
+                                            library=self.library1,
+                                            credit_time = 30,
+                                            status=self.customerStatus[2])
+        rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+                                    customer = customer2, 
+                                    employee = self.employee1, 
+                                    library = self.library1,
+                                    rent_date = date(2023, 10, 10),
+                                    due_date = date(2025, 6, 12),
+                                    status = self.rentStatus[0]
+                                    )
+        
+        data1 = create_rent(self.book1.pk, 1, customer2.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 10), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data1, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_create_form.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
+    def test_customer_with_status_not_equal_to_active_borrower_or_suspended_and_on_time_rent(self):
+        customer2 = Customer.objects.create(first_name='Jackson', 
+                                            last_name='Jonson', 
+                                            rnc='402-3070960-7',
+                                            birthday=date(1998, 2, 8), 
+                                            library=self.library1,
+                                            credit_time = 30,
+                                            status=self.customerStatus[2])
+        rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+                                    customer = customer2, 
+                                    employee = self.employee1, 
+                                    library = self.library1,
+                                    rent_date = date(2024, 1, 10),
+                                    due_date = date(2025, 6, 12),
+                                    status = self.rentStatus[0]
+                                    )
+        
+        data1 = create_rent(self.book1.pk, 1, customer2.pk, 
+                            self.employee1.pk, self.library1.pk,
+                            date(2024, 1, 12), date(2024, 6, 12),
+                            self.rentStatus[0].pk)
+        response = self.client.post(self.url, data1, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_create_form.html')
+        self.assertEqual(Rent.objects.count(), 1)
+
 class UpdateViewTests(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
@@ -255,6 +327,13 @@ class UpdateViewTests(TestCase):
         self.customer1 = Customer.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc = '402-3070960-8', 
+                                                birthday = date(2000, 1, 8), 
+                                                library = self.library1,
+                                                credit_time = 7,
+                                                status=self.customerStatus[0])
+        self.customer2 = Customer.objects.create(first_name='Jackson', 
+                                                last_name='Jonson', 
+                                                rnc = '402-3070960-7', 
                                                 birthday = date(2000, 1, 8), 
                                                 library = self.library1,
                                                 credit_time = 7,
@@ -413,6 +492,37 @@ class UpdateViewTests(TestCase):
         self.book1.refresh_from_db()
         #import ipdb; ipdb.set_trace()
         self.assertEqual(self.book1.available(), 5)
+
+    def test_return_a_book_with_rent_date_over_credit_time(self):
+        rent2 = create_rent(self.book1.pk, 1, self.customer2.pk, 
+                           self.employee1.pk, self.library1.pk,
+                           date(2024, 1, 2), date(2024, 6, 5),
+                           self.rentStatus[0].pk)
+        url = reverse('libraries:rent_create')
+        response = self.client.post(url, rent2, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 2)
+        self.customer2.refresh_from_db()
+        self.assertEqual(self.customer2.status.name, 'Suspended Borrowing Privileges')
+
+        rent2 = Rent.objects.last()
+
+        data = create_rent(rent2.book.pk, rent2.amount_to_rent, 
+                           rent2.customer.pk, rent2.employee.pk, 
+                           rent2.library.pk, self.rent1.rent_date, 
+                           self.rent1.due_date, self.rentStatus[4].pk)
+        url = reverse('libraries:rent_update', args=[rent2.pk])
+        response = self.client.post(url, data, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'rent/rent_index.html')
+        self.assertEqual(Rent.objects.count(), 2)
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.available(), 4)
+        self.customer2.refresh_from_db()
+        #import ipdb; ipdb.set_trace()
+        self.assertEqual(self.customer2.status.name, 'Active Borrower')
 
 class DetailViewTests(TestCase):
     def setUp(self):

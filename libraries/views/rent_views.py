@@ -41,6 +41,7 @@ class CreateView(generic.CreateView):
 
         #AdjustStatusOfBook(form.instance.book.pk)
         form.instance.book.AdjustStatusOfBook()
+        form.instance.customer.CheckRentAvailability()
 
         return response
     
@@ -69,6 +70,7 @@ class UpdateView(generic.UpdateView):
         response = super().form_valid(form)
 
         form.instance.book.AdjustStatusOfBook()
+        form.instance.customer.CheckRentAvailability()
 
         #import ipdb; ipdb.set_trace()
 

@@ -15,16 +15,18 @@ class CustomerService:
     @staticmethod
     def CheckRentAvailability(customer):
         #import ipdb; ipdb.set_trace()
+        from persons.models import CustomerStatus
         rents_due_for_customer = customer.rents_due.exclude(status__name = 'Returned')
         if rents_due_for_customer:
-            from persons.models import CustomerStatus
             oldest_rent_date = rents_due_for_customer.earliest('rent_date').rent_date
             
             if (date.today() - oldest_rent_date).days > customer.credit_time:
-                customer.status = CustomerStatus.objects.get(pk=3)
-            else:
+                customer.status = CustomerStatus.objects.get(pk=5)
+            elif customer.status.name == 'Suspended Borrowing Privileges':
                 customer.status = CustomerStatus.objects.get(pk=1)
+        elif customer.status.name == 'Suspended Borrowing Privileges':
+            customer.status = CustomerStatus.objects.get(pk=1)
 
-            customer.save()
+        customer.save()
             
         return customer

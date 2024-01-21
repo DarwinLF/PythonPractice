@@ -59,24 +59,6 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'Active Borrower')
         self.assertTemplateUsed(response, 'customer/customer_index.html')
 
-    def test_customer_with_overdue_rent(self):
-        rent = Rent.objects.create(book = self.book1, amount_to_rent = 1,
-                                   customer = self.customer1, 
-                                   employee = self.employee1, 
-                                   library = self.library1,
-                                   rent_date = date(2023, 10, 18),
-                                   due_date = date(2025, 6, 12),
-                                   status = self.rentStatus[0])
-        
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Darwin')
-        self.assertContains(response, 'Lantigua')
-        self.assertContains(response, 'libreria1')
-        self.assertContains(response, 'Overdue Materials')
-        self.assertTemplateUsed(response, 'customer/customer_index.html')
-
 def create_customer(first_name, last_name, rnc, birthday, libraryPk, 
                     credit_time, statusPk):
     return {
@@ -329,18 +311,3 @@ class DetailViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_detail.html')
         self.assertEqual(response.context['model'], self.customer1)
-
-    def test_customer_with_overdue_rent(self):
-        rent = Rent.objects.create(book = self.book1, amount_to_rent = 1,
-                                   customer = self.customer1, 
-                                   employee = self.employee1, 
-                                   library = self.library1,
-                                   rent_date = date(2023, 10, 18),
-                                   due_date = date(2025, 6, 12),
-                                   status = self.rentStatus[0])
-        
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer/customer_detail.html')
-        self.assertContains(response, 'Overdue Materials')

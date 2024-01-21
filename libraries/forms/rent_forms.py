@@ -29,6 +29,7 @@ class RentForm(forms.ModelForm):
 
         if instance_pk: #the model is updated
             books_available = data['book'].available(instance_pk)
+
         else: #the model is created
             books_available = data['book'].available()
 
