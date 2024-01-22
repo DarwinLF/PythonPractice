@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.views import generic
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
@@ -11,10 +10,9 @@ from libraries.forms.library_forms import LibraryForm
 from persons.forms.author_forms import AuthorForm
 
 class IndexView(generic.ListView):
-    model = Book
     template_name = 'book/book_index.html'
     context_object_name = 'model_list'
-    paginate_by = 10
+    paginate_by = 4
 
     def get_queryset(self):
         library_id = self.kwargs.get('library_id')
@@ -33,9 +31,7 @@ class IndexView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        #context['model_list'] = context['model_list'].order_by('title')
-
-        paginator = Paginator(context['model_list'], self.paginate_by)
+        paginator = Paginator(self.object_list, self.paginate_by)
         page = self.request.GET.get('page')
 
         try:

@@ -6,7 +6,7 @@
         <td>{{item.author}}</td>
         <td>{{item.library}}</td>
         <td>{{item.status}}</td>
-        <td><a class="btn btn-outline-primary" href="{% block detail_link %}{% url 'main'%}{% endblock %}">Detail</a></td>
-        <td><a class="btn btn-outline-primary" href="{% block edit_link %}{% url 'main'%}{% endblock %}">Edit</a></td>
+        <td><a class="btn btn-outline-primary" href="{% block detail_link %}{% url 'libraries:book_detail' item.id %}{% endblock %}">Detail</a></td>
+        <td><a class="btn btn-outline-primary" href="{% block edit_link %}{% url 'libraries:book_update' item.id %}{% endblock %}">Edit</a></td>
     </tr>
 {% endfor %}
