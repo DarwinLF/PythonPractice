@@ -52,7 +52,8 @@ class CreateViewTests(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'employee/employee_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'employee/employee_create_form.html')
 
     def test_valid_data_post(self):
         data = create_employee('Darwin', 'Lantigua', '402-3070960-8', 
@@ -77,10 +78,12 @@ class CreateViewTests(TestCase):
                                date(1999, 2, 12), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'employee/employee_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'employee/employee_create_form.html')
 
         self.assertEqual(Employee.objects.count(), 1)
-        self.assertFalse(Employee.objects.filter(first_name='Jackson').exists())
+        self.assertFalse(Employee.objects.filter(first_name=
+                                                 'Jackson').exists())
 
     def test_invalid_rnc(self):
         data = create_employee('Darwin', 'Lantigua', '402-307060-8', 
@@ -88,7 +91,8 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Employee.objects.count(), 0)
-        self.assertFalse(Employee.objects.filter(first_name='Darwin').exists())
+        self.assertFalse(Employee.objects.filter(first_name=
+                                                 'Darwin').exists())
 
     #change in the future
     def test_future_birthday(self):
@@ -108,7 +112,8 @@ class CreateViewTests(TestCase):
                                date(2000, 1, 8), self.library.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'employee/employee_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'employee/employee_create_form.html')
         self.assertEqual(Employee.objects.count(), 1)
 
     def test_same_employee_different_library(self):
@@ -151,7 +156,8 @@ class UpdateViewTests(TestCase):
                                                  rnc='402-3070960-9', 
                                                  birthday=date(1999, 2, 12), 
                                                  library=self.library2)
-        self.url = reverse('persons:employee_update', args=[self.employee2.pk])
+        self.url = reverse('persons:employee_update', 
+                           args=[self.employee2.pk])
         self.client = Client()
 
     def test_get_view(self):

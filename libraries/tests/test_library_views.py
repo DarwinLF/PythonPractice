@@ -49,7 +49,8 @@ class CreateViewTests(TestCase):
         self.assertEqual(library_created.rnc, '11122222223')
 
     def test_duplicate_rnc(self):
-        library = Library.objects.create(name='library1', location='Tenares', rnc='123-1234567-1')
+        library = Library.objects.create(name='library1', location='Tenares', 
+                                         rnc='123-1234567-1')
 
         data = create_library('libreria2', 'Salcedo', '123-12345671')
         response = self.client.post(self.url, data, follow=True)
@@ -68,9 +69,14 @@ class CreateViewTests(TestCase):
 
 class UpdateViewTests(TestCase):
     def setUp(self):
-        self.library1 = Library.objects.create(name='library1', location='Tenares', rnc='123-1234567-1')
-        self.library2 = Library.objects.create(name='library2', location='Salcedo', rnc='111-2222222-3')
-        self.url = reverse('libraries:library_update', args=[self.library2.pk])
+        self.library1 = Library.objects.create(name='library1', 
+                                               location='Tenares', 
+                                               rnc='123-1234567-1')
+        self.library2 = Library.objects.create(name='library2', 
+                                               location='Salcedo', 
+                                               rnc='111-2222222-3')
+        self.url = reverse('libraries:library_update', 
+                           args=[self.library2.pk])
         self.client = Client()
 
     def test_get_view(self):
@@ -81,7 +87,9 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_rnc(self):
         # Submit the form with updated data
-        updated_data = create_library(self.library2.name, self.library2.location, self.library1.rnc)
+        updated_data = create_library(self.library2.name, 
+                                      self.library2.location, 
+                                      self.library1.rnc)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 
@@ -91,7 +99,8 @@ class UpdateViewTests(TestCase):
 
     def test_update_all_fields_except_rnc(self):
         # Submit the form with updated data
-        updated_data = create_library('libreria3', 'Santiago', self.library2.rnc)
+        updated_data = create_library('libreria3', 'Santiago', 
+                                      self.library2.rnc)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
 

@@ -10,13 +10,20 @@ class RentForm(forms.ModelForm):
         fields = ['book', 'customer', 'employee', 'library',
                   'amount_to_rent', 'rent_date', 'due_date', 'status']
         widgets = {
-            'book': forms.Select(attrs={'class': 'form-control', 'id': 'bookSelect'}),
-            'customer': forms.Select(attrs={'class': 'form-control', 'id': 'customerSelect'}),
-            'employee': forms.Select(attrs={'class': 'form-control', 'id': 'employeeSelect'}),
-            'library': forms.Select(attrs={'class': 'form-control', 'id': 'librarySelect'}),
-            'amount_to_rent': forms.NumberInput(attrs={'class': 'form-control'}),
-            'rent_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'book': forms.Select(attrs={'class': 'form-control', 
+                                        'id': 'bookSelect'}),
+            'customer': forms.Select(attrs={'class': 'form-control', 
+                                            'id': 'customerSelect'}),
+            'employee': forms.Select(attrs={'class': 'form-control', 
+                                            'id': 'employeeSelect'}),
+            'library': forms.Select(attrs={'class': 'form-control', 
+                                           'id': 'librarySelect'}),
+            'amount_to_rent': forms.NumberInput(attrs=
+                                                {'class': 'form-control'}),
+            'rent_date': forms.DateInput(attrs={'type': 'date', 
+                                                'class': 'form-control'}),
+            'due_date': forms.DateInput(attrs={'type': 'date', 
+                                               'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -37,13 +44,16 @@ class RentForm(forms.ModelForm):
                 self.add_error('customer', 'The customer can\'t rent')
 
         if amount_to_rent <= 0:
-            self.add_error('amount_to_rent', 'The amount to rent should be greater that 0')
+            self.add_error('amount_to_rent', 
+                           'The amount to rent should be greater that 0')
 
         if amount_to_rent > books_available:
-            self.add_error('amount_to_rent', 'There are not enough books available')
+            self.add_error('amount_to_rent', 
+                           'There are not enough books available')
 
         if rent_date > date.today():
-            self.add_error('rent_date', 'The rent date can\'t be in the future')
+            self.add_error('rent_date', 
+                           'The rent date can\'t be in the future')
 
         if due_date < date.today():
             self.add_error('due_date', 'The due date can\'t be in the past')

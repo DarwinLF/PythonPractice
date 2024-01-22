@@ -26,7 +26,8 @@ class IndexView(generic.ListView):
         queryset = self.get_queryset()
 
         # Modify each instance using your_model_method
-        modified_instances = [instance.CheckRentAvailability() for instance in queryset]
+        modified_instances = [instance.CheckRentAvailability() 
+                              for instance in queryset]
 
         # Override the object_list attribute with the modified instances
         self.object_list = modified_instances

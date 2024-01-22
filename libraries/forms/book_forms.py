@@ -43,7 +43,3 @@ class BookForm(forms.ModelForm):
             self.add_error('isbn', 'ISBN already exists')
         
         return data
-    
-class BookFilterForm(forms.Form):
-    filter_type = forms.ChoiceField(choices=[('title', 'Title'), ('gender__name', 'Gender'), ('status__name', 'Status')])
-    keyword = forms.CharField(required=False)

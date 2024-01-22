@@ -5,7 +5,8 @@ from django.db import IntegrityError, transaction
 from datetime import date
 
 from persons.models import Customer, CustomerStatus, Employee, Author
-from libraries.models import Library, Rent, RentStatus, Book, BookGenders, BookStatus
+from libraries.models import Library, Rent, RentStatus, Book, BookGenders
+from libraries.models import BookStatus
 
 class IndexViewTests(TestCase):
     def setUp(self):
@@ -84,7 +85,8 @@ class CreateViewTests(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer/customer_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'customer/customer_create_form.html')
 
     def test_valid_data_post(self):
         data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
@@ -113,10 +115,12 @@ class CreateViewTests(TestCase):
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer/customer_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'customer/customer_create_form.html')
 
         self.assertEqual(Customer.objects.count(), 1)
-        self.assertFalse(Customer.objects.filter(first_name='Jackson').exists())
+        self.assertFalse(Customer.objects.filter(first_name=
+                                                 'Jackson').exists())
 
     def test_invalid_rnc(self):
         data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
@@ -125,7 +129,8 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Customer.objects.count(), 0)
-        self.assertFalse(Customer.objects.filter(first_name='Darwin').exists())
+        self.assertFalse(Customer.objects.filter(first_name=
+                                                 'Darwin').exists())
 
     #change in the future
     def test_future_birthday(self):
@@ -149,7 +154,8 @@ class CreateViewTests(TestCase):
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer/customer_create_form.html')
+        self.assertTemplateUsed(response, 
+                                'customer/customer_create_form.html')
         self.assertEqual(Customer.objects.count(), 1)
 
     def test_same_customer_different_library(self):
@@ -206,7 +212,8 @@ class UpdateViewTests(TestCase):
                                                  credit_time = 7,
                                                  status=self.customerStatus[0]
                                                  )
-        self.url = reverse('persons:customer_update', args=[self.customer2.pk])
+        self.url = reverse('persons:customer_update', 
+                           args=[self.customer2.pk])
         self.client = Client()
 
     def test_get_view(self):
@@ -302,7 +309,8 @@ class DetailViewTests(TestCase):
                                          status = self.bookStatus[0]
                                          )
         self.rentStatus = RentStatus.objects.all()
-        self.url = reverse('persons:customer_detail', args=[self.customer1.pk])
+        self.url = reverse('persons:customer_detail', 
+                           args=[self.customer1.pk])
         self.client = Client()
     
     def test_get_view(self):

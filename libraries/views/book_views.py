@@ -47,7 +47,8 @@ class IndexView(generic.ListView):
 
         context['model_list'] = model_list
         context['filter_value'] = self.request.GET.get('filter_value', '')
-        context['filter_field'] = self.request.GET.get('filter_field', 'title')
+        context['filter_field'] = self.request.GET.get('filter_field', 
+                                                       'title')
         if 'library_id' in self.kwargs:
             context['library_id'] = self.kwargs['library_id']
         return context

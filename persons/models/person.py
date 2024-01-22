@@ -26,4 +26,6 @@ class Person(models.Model):
     @property
     def age(self):
         today = date.today()
-        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+        return today.year - self.birthday.year - ((today.month, today.day)
+                                                   < (self.birthday.month, 
+                                                      self.birthday.day))

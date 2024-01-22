@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import libraries_views, library_views, book_views, rent_views, ajax_views
+from .views import libraries_views, library_views, book_views, rent_views 
+from .views import ajax_views
 from persons.views import employee_views, customer_views
 
 app_name = 'libraries'

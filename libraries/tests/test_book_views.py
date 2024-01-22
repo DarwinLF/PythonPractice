@@ -124,7 +124,8 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Book.objects.count(), 0)
-        self.assertFalse(Book.objects.filter(title='Our love is live').exists())
+        self.assertFalse(Book.objects.filter(title='Our love is live')
+                         .exists())
 
 class UpdateViewTests(TestCase):
     def setUp(self):
@@ -172,11 +173,13 @@ class UpdateViewTests(TestCase):
 
     def test_update_to_duplicate_isbn(self):
         # Submit the form with updated data
-        updated_data = create_book(self.book2.title, self.book2.published_date, 
-                                   self.book1.isbn,  self.book2.gender, 
-                                   self.book2.quantity, self.book2.rent_price, 
+        updated_data = create_book(self.book2.title, 
+                                   self.book2.published_date, self.book1.isbn,
+                                   self.book2.gender, self.book2.quantity, 
+                                   self.book2.rent_price, 
                                    self.book2.sale_price, 
-                                   self.book2.author.pk, self.book2.library.pk, 
+                                   self.book2.author.pk, 
+                                   self.book2.library.pk, 
                                    self.book2.status.pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -188,8 +191,8 @@ class UpdateViewTests(TestCase):
     def test_update_all_fields_except_isbn(self):
         # Submit the form with updated data
         updated_data = create_book('Blood bond', date(2017, 3, 3), 
-                                   self.book2.isbn, self.genders[1].pk, 10, 150, 
-                                   300, self.book2.author.pk, 
+                                   self.book2.isbn, self.genders[1].pk, 10, 
+                                   150, 300, self.book2.author.pk, 
                                    self.book2.library.pk, self.status[1].pk)
         response = self.client.post(self.url, updated_data, follow=True)
         self.assertEqual(response.status_code, 200)

@@ -16,9 +16,11 @@ class CustomerService:
     def CheckRentAvailability(customer):
         #import ipdb; ipdb.set_trace()
         from persons.models import CustomerStatus
-        rents_due_for_customer = customer.rents_due.exclude(status__name = 'Returned')
+        rents_due_for_customer = customer.rents_due.exclude(
+            status__name = 'Returned')
         if rents_due_for_customer:
-            oldest_rent_date = rents_due_for_customer.earliest('rent_date').rent_date
+            oldest_rent_date = rents_due_for_customer.earliest(
+                'rent_date').rent_date
             
             if (date.today() - oldest_rent_date).days > customer.credit_time:
                 customer.status = CustomerStatus.objects.get(pk=5)

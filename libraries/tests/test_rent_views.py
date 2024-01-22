@@ -44,7 +44,8 @@ class IndexViewTests(TestCase):
                                          status = self.bookStatus[0]
                                          )
         self.rentStatus = RentStatus.objects.all()
-        self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+        self.rent1 = Rent.objects.create(book = self.book1, 
+                                         amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
@@ -64,7 +65,7 @@ class IndexViewTests(TestCase):
         self.assertContains(response, 'libreria1')
         self.assertTemplateUsed(response, 'rent/rent_index.html')
 
-def create_rent(bookPk, amount_to_rent, customerPk, employeePk, libraryPk, 
+def create_rent(bookPk, amount_to_rent, customerPk, employeePk, libraryPk,
                 rent_date, due_date, statusPk):
     return {
         'book': bookPk,
@@ -363,7 +364,8 @@ class UpdateViewTests(TestCase):
                                          status = self.bookStatus[0]
                                          )
         self.rentStatus = RentStatus.objects.all()
-        self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+        self.rent1 = Rent.objects.create(book = self.book1, 
+                                         amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
@@ -381,7 +383,7 @@ class UpdateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_update.html')
     
     def test_update_to_past_due_date(self):
-        updated_data = create_rent(self.book1.pk, self.rent1.amount_to_rent, 
+        updated_data = create_rent(self.book1.pk, self.rent1.amount_to_rent,
                                    self.customer1.pk, self.employee1.pk, 
                                    self.library1.pk, self.rent1.rent_date, 
                                    date(2023, 6, 12), self.rent1.status.pk)
@@ -480,10 +482,10 @@ class UpdateViewTests(TestCase):
         self.assertEqual(self.book1.status.name, 'Available')
 
     def test_return_a_book(self):
-        data = create_rent(self.rent1.book.pk, self.rent1.amount_to_rent, self.rent1.customer.pk, 
-                           self.rent1.employee.pk, self.rent1.library.pk,
-                           self.rent1.rent_date, self.rent1.due_date,
-                           self.rentStatus[4].pk)
+        data = create_rent(self.rent1.book.pk, self.rent1.amount_to_rent, 
+                           self.rent1.customer.pk, self.rent1.employee.pk, 
+                           self.rent1.library.pk, self.rent1.rent_date, 
+                           self.rent1.due_date, self.rentStatus[4].pk)
         response = self.client.post(self.url, data, follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -504,7 +506,8 @@ class UpdateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_index.html')
         self.assertEqual(Rent.objects.count(), 2)
         self.customer2.refresh_from_db()
-        self.assertEqual(self.customer2.status.name, 'Suspended Borrowing Privileges')
+        self.assertEqual(self.customer2.status.name, 
+                         'Suspended Borrowing Privileges')
 
         rent2 = Rent.objects.last()
 
@@ -562,7 +565,8 @@ class DetailViewTests(TestCase):
                                          status = self.bookStatus[0]
                                          )
         self.rentStatus = RentStatus.objects.all()
-        self.rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
+        self.rent1 = Rent.objects.create(book = self.book1, 
+                                         amount_to_rent = 1,
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,

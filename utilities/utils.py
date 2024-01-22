@@ -13,6 +13,7 @@ def get_breadcrumbs(request):
     for part in url_parts:
         if part:
             current_url += '/' + part
-            breadcrumbs.append({'name': part.capitalize(), 'url': current_url})
+            breadcrumbs.append({'name': part.capitalize(), 
+                                'url': current_url})
 
     return breadcrumbs

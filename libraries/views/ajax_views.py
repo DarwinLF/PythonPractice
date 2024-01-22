@@ -15,7 +15,8 @@ class RentAjaxView(View):
         customers = serialize('json', library.customers.all())
         employees = serialize('json', library.employees.all())
 
-        return JsonResponse({'customers': customers, 'books': books, 'employees': employees})
+        return JsonResponse({'customers': customers, 'books': books, 
+                             'employees': employees})
     
 class BookAvailableAjaxView(View):
     def get(self, request, *args, **kwargs):
