@@ -1,9 +1,9 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <h1>{% block header%}Django{% endblock %}</h1>
+    <h1>{% block header %}Django{% endblock %}</h1>
     <ul class="list-group list-group-flush bg-dark text-light">
-        {% for link in links%}
+        {% for link in links %}
             <a class="list-group-item list-group-item-action bg-dark border-light link-custom-color" href="{{ link.url }}">{{ link.text }}</a>
         {% endfor %}
     </ul>

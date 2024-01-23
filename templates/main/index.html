@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <h1 class="mb-4">{% block name_list%}Model{% endblock %} List</h1>
+    <h1 class="mb-4">{% block name_list %}Model{% endblock %} List</h1>
     <a class="btn btn-primary mb-3" href="{% block create_link %}{% url 'main' %}{% endblock %}">Create new {% block model_name%}model{% endblock%}</a>
 
     {% block filter_inputs %}{% endblock%}
@@ -18,7 +18,7 @@
             <tbody>
                 {% for item in model_list %}
                     <tr>
-                        {% block table_fields%}{% endblock %}
+                        {% block table_fields %}{% endblock %}
                         <td><a class="btn btn-outline-primary" href="{% block detail_link %}{% url 'main'%}{% endblock %}">Detail</a></td>
                         <td><a class="btn btn-outline-primary" href="{% block edit_link %}{% url 'main'%}{% endblock %}">Edit</a></td>
                     </tr>

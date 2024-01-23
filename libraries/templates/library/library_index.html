@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Library{% endblock %}
+{% block name_list %}Library{% endblock %}
 {% block create_link %}{% url 'libraries:library_create' %}{% endblock %}
-{% block model_name%}library{% endblock%}
+{% block model_name %}library{% endblock %}
 
 {% block table_headers %}
     <th>Name</th>
@@ -10,13 +10,13 @@
     <th>RNC</th>
 {% endblock %}
 
-{% block table_fields%}
-    <td>{{item.name}}</td>
-    <td>{{item.location}}</td>
-    <td>{{item.rnc}}</td>
+{% block table_fields %}
+    <td>{{ item.name }}</td>
+    <td>{{ item.location }}</td>
+    <td>{{ item.rnc }}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'libraries:library_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'libraries:library_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'libraries:library_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'libraries:library_update' item.id %}{% endblock %}
 
 {% block no_list %}libraries{% endblock %}

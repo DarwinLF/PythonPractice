@@ -3,7 +3,7 @@
 {% block extra_fields %}
     <p class="card-text">RNC: {{ model.rnc }}</p>
     <p class="card-text">Age: {{ model.age }}</p>
-    <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id%}">{{ model.library }}</a></p>
+    <p class="card-text">Library: <a href="{% url 'libraries:library_detail' model.library.id %}">{{ model.library }}</a></p>
     <p class="card-text">Credit Time: {{ model.credit_time }} days</p>
     <p class="card-text">Status: {{ model.status }}</p>
 {% endblock %}

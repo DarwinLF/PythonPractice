@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Rent{% endblock %}
+{% block name_list %}Rent{% endblock %}
 {% block create_link %}{% url 'libraries:rent_create' %}{% endblock %}
-{% block model_name%}rent{% endblock%}
+{% block model_name %}rent{% endblock%}
 
 {% block table_headers %}
     <th>Book</th>
@@ -12,7 +12,7 @@
     <th>Due Date</th>
 {% endblock %}
 
-{% block table_fields%}
+{% block table_fields %}
     <td>{{item.book}}</td>
     <td>{{item.customer}}</td>
     <td>{{item.employee}}</td>
@@ -20,7 +20,7 @@
     <td>{{item.due_date}}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'libraries:rent_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'libraries:rent_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'libraries:rent_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'libraries:rent_update' item.id %}{% endblock %}
 
 {% block no_list %}rents{% endblock %}

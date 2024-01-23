@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Book{% endblock %}
+{% block name_list %}Book{% endblock %}
 {% block create_link %}{% url 'libraries:book_create' %}{% endblock %}
-{% block model_name%}book{% endblock%}
+{% block model_name %}book{% endblock %}
 
 {% block filter_inputs %}
     <div class="input-group mb-3">
@@ -15,7 +15,7 @@
         </div>
         <input type="text" class="form-control" id="filterValue" placeholder="Enter filter value" oninput="filterBooks()">
     </div>
-{% endblock%}
+{% endblock %}
 
 {% block table_headers %}
     <th>Title</th>
@@ -26,17 +26,17 @@
     <th>Status</th>
 {% endblock %}
 
-{% block table_fields%}
-    <td>{{item.title}}</td>
-    <td>{{item.gender}}</td>
-    <td>{{item.quantity}}</td>
-    <td>{{item.author}}</td>
-    <td>{{item.library}}</td>
-    <td>{{item.status}}</td>
+{% block table_fields %}
+    <td>{{ item.title }}</td>
+    <td>{{ item.gender }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.author }}</td>
+    <td>{{ item.library }}</td>
+    <td>{{ item.status }}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'libraries:book_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'libraries:book_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'libraries:book_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'libraries:book_update' item.id %}{% endblock %}
 
 {% block no_list %}books{% endblock %}
 

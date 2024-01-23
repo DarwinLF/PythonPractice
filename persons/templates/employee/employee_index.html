@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Employee{% endblock %}
+{% block name_list %}Employee{% endblock %}
 {% block create_link %}{% url 'persons:employee_create' %}{% endblock %}
-{% block model_name%}employee{% endblock%}
+{% block model_name %}employee{% endblock%}
 
 {% block table_headers %}
     <th>First Name</th>
@@ -12,15 +12,15 @@
     <th>Library</th>
 {% endblock %}
 
-{% block table_fields%}
-    <td>{{item.first_name}}</td>
-    <td>{{item.last_name}}</td>
-    <td>{{item.rnc}}</td>
-    <td>{{item.age}}</td>
-    <td>{{item.library}}</td>
+{% block table_fields %}
+    <td>{{ item.first_name }}</td>
+    <td>{{ item.last_name }}</td>
+    <td>{{ item.rnc }}</td>
+    <td>{{ item.age }}</td>
+    <td>{{ item.library }}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'persons:employee_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'persons:employee_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'persons:employee_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'persons:employee_update' item.id %}{% endblock %}
 
 {% block no_list %}employees{% endblock %}

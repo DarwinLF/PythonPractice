@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Customer{% endblock %}
+{% block name_list %}Customer{% endblock %}
 {% block create_link %}{% url 'persons:customer_create' %}{% endblock %}
-{% block model_name%}customer{% endblock%}
+{% block model_name %}customer{% endblock%}
 
 {% block table_headers %}
     <th>First Name</th>
@@ -11,14 +11,14 @@
     <th>Status</th>
 {% endblock %}
 
-{% block table_fields%}
-    <td>{{item.first_name}}</td>
-    <td>{{item.last_name}}</td>
-    <td>{{item.library}}</td>
-    <td>{{item.status}}</td>
+{% block table_fields %}
+    <td>{{ item.first_name }}</td>
+    <td>{{ item.last_name }}</td>
+    <td>{{ item.library }}</td>
+    <td>{{ item.status }}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'persons:customer_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'persons:customer_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'persons:customer_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'persons:customer_update' item.id %}{% endblock %}
 
 {% block no_list %}customers{% endblock %}

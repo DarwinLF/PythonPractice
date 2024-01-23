@@ -1,32 +1,32 @@
 {% extends 'main/create_form.html' %}
 
-{% block model%}customer{% endblock %}
+{% block model %}customer{% endblock %}
 
 {% block form_id %}customer_form{% endblock %}
 {% block action_link %}{% url 'persons:customer_create' %}{% endblock %}
 
-{% block form_fields%}
+{% block form_fields %}
   <div class="form-group">
-    {{form.first_name.label_tag}} {{form.first_name}}
+    {{ form.first_name.label_tag }} {{ form.first_name }}
   </div>
   <div class="form-group">
-    {{form.last_name.label_tag}} {{form.last_name}}
+    {{ form.last_name.label_tag }} {{ form.last_name }}
   </div>
   <div class="form-group">
-    {{form.rnc.label_tag}} {{form.rnc}}
+    {{ form.rnc.label_tag }} {{ form.rnc }}
   </div>
   <div class="form-group">
-    {{form.birthday.label_tag}} {{form.birthday}}
+    {{ form.birthday.label_tag }} {{ form.birthday }}
   </div>
   <div class="form-group">
-    {{form.credit_time.label_tag}} {{form.credit_time}}
+    {{ form.credit_time.label_tag }} {{ form.credit_time }}
   </div>
   <div class="form-group">
-    {{form.status.label_tag}} {{form.status}}
+    {{ form.status.label_tag }} {{ form.status }}
   </div>
   <div class="form-group row">
     <div class="col-sm-8">
-      {{form.library.label_tag}} {{form.library}}
+      {{ form.library.label_tag }} {{ form.library }}
     </div>
     <div class="col-sm-4 align-self-end">
       <button id="libraryCustomerButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createLibraryModal"><i class="bi bi-plus-circle"></i></button>

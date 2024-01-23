@@ -1,8 +1,8 @@
 {% extends 'main/index.html' %}
 
-{% block name_list%}Author{% endblock %}
+{% block name_list %}Author{% endblock %}
 {% block create_link %}{% url 'persons:author_create' %}{% endblock %}
-{% block model_name%}author{% endblock%}
+{% block model_name %}author{% endblock%}
 
 {% block table_headers %}
     <th>First Name</th>
@@ -12,15 +12,15 @@
     <th>Age</th>
 {% endblock %}
 
-{% block table_fields%}
-    <td>{{item.first_name}}</td>
-    <td>{{item.last_name}}</td>
-    <td>{{item.alias}}</td>
-    <td>{{item.rnc}}</td>
-    <td>{{item.age}}</td>
+{% block table_fields %}
+    <td>{{ item.first_name }}</td>
+    <td>{{ item.last_name }}</td>
+    <td>{{ item.alias }}</td>
+    <td>{{ item.rnc }}</td>
+    <td>{{ item.age }}</td>
 {% endblock %}
 
-{% block detail_link %}{% url 'persons:author_detail' item.id%}{% endblock %}
-{% block edit_link %}{% url 'persons:author_update' item.id%}{% endblock %}
+{% block detail_link %}{% url 'persons:author_detail' item.id %}{% endblock %}
+{% block edit_link %}{% url 'persons:author_update' item.id %}{% endblock %}
 
 {% block no_list %}authors{% endblock %}

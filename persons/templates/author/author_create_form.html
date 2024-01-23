@@ -1,6 +1,6 @@
 {% extends 'main/create_form.html' %}
 
-{% block model%}author{% endblock %}
+{% block model %}author{% endblock %}
 
 {% block form_id %}author_form{% endblock %}
 {% block action_link %}{% url 'persons:author_create' %}{% endblock %}
@@ -9,21 +9,21 @@
   <h2>The last person created was {{person}} with age: {{person.age}}</h2>
 {% endif %} {% endcomment %}
 
-{% block form_fields%}
+{% block form_fields %}
   <div class="form-group">
-    {{form.first_name.label_tag}} {{form.first_name}}
+    {{ form.first_name.label_tag }} {{ form.first_name }}
   </div>
   <div class="form-group">
-    {{form.last_name.label_tag}} {{form.last_name}}
+    {{ form.last_name.label_tag }} {{ form.last_name }}
   </div>
   <div class="form-group">
-    {{form.alias.label_tag}} {{form.alias}}
+    {{ form.alias.label_tag }} {{ form.alias }}
   </div>
   <div class="form-group">
-    {{form.rnc.label_tag}} {{form.rnc}}
+    {{ form.rnc.label_tag }} {{ form.rnc }}
   </div>
   <div class="form-group">
-    {{form.birthday.label_tag}} {{form.birthday}}
+    {{ form.birthday.label_tag }} {{ form.birthday }}
   </div>
 {% endblock %}
 

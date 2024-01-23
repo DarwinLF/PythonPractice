@@ -1,32 +1,32 @@
 {% extends 'main/update.html' %}
 
-{% block model%}book{% endblock %}
+{% block model %}book{% endblock %}
 
-{% block form_fields%}
+{% block form_fields %}
   <div class="form-group">
-    {{form.title.label_tag}} {{form.title}}
+    {{ form.title.label_tag }} {{ form.title }}
   </div>
   <div class="form-group">
-    {{form.published_date.label_tag}} {{form.published_date}}
+    {{ form.published_date.label_tag }} {{ form.published_date }}
   </div>
   <div class="form-group">
-    {{form.isbn.label_tag}} {{form.isbn}}
+    {{ form.isbn.label_tag }} {{ form.isbn }}
   </div>
   <div class="form-group">
-    {{form.gender.label_tag}} {{form.gender}}
+    {{ form.gender.label_tag }} {{ form.gender }}
   </div>
   <div class="form-group">
-    {{form.quantity.label_tag}} {{form.quantity}}
+    {{ form.quantity.label_tag }} {{ form.quantity }}
   </div>
   <div class="form-group">
-    {{form.rent_price.label_tag}} {{form.rent_price}}
+    {{ form.rent_price.label_tag }} {{ form.rent_price }}
   </div>
   <div class="form-group">
-    {{form.sale_price.label_tag}} {{form.sale_price}}
+    {{ form.sale_price.label_tag }} {{ form.sale_price }}
   </div>
   <div class="form-group row">
     <div class="col-sm-8">
-      {{form.author.label_tag}} {{form.author}}
+      {{ form.author.label_tag }} {{ form.author }}
     </div>
     <div class="col-sm-4 align-self-end">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createAuthorModal"><i class="bi bi-plus-circle"></i></button>
@@ -34,14 +34,14 @@
   </div>
   <div class="form-group row">
     <div class="col-sm-8">
-      {{form.library.label_tag}} {{form.library}}
+      {{ form.library.label_tag }} {{ form.library }}
     </div>
     <div class="col-sm-4 align-self-end">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createLibraryModal"><i class="bi bi-plus-circle"></i></button>
     </div>
   </div>
   <div class="form-group">
-    {{form.status.label_tag}} {{form.status}}
+    {{ form.status.label_tag }} {{ form.status }}
   </div>
 {% endblock %}
 
