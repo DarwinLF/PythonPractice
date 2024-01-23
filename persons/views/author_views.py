@@ -1,5 +1,7 @@
 from django.views import generic
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ..models import Author
@@ -53,3 +55,21 @@ class DetailView(generic.DetailView):
     model = Author
     template_name = 'author/author_detail.html'
     context_object_name = 'model'
+
+def create_modal(request):
+    if request.method == 'POST':
+        form = AuthorForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'status': 'success', 'message': 
+                                 'Form submitted successfully'})
+        else:
+            errors_html = render(request, 'author/author_create_form.html', 
+                                 {'form': form}).content.decode('utf-8')
+            return JsonResponse({'status': 'error', 'message': 
+                                 'Form submission failed', 'errors': 
+                                 errors_html}, status=400)
+    else:
+        form = AuthorForm()
+    
+    return render(request, 'author/author_create_form.html', {'form': form})

@@ -1,5 +1,7 @@
 from django.views import generic
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from persons.models import Customer
@@ -103,3 +105,21 @@ class DetailView(generic.DetailView):
         modified_object = obj.CheckRentAvailability()
 
         return modified_object
+    
+def create_modal(request):
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'status': 'success', 'message': 
+                                 'Form submitted successfully'})
+        else:
+            errors_html = render(request, 'customer/customer_create_form.html', 
+                                 {'form': form}).content.decode('utf-8')
+            return JsonResponse({'status': 'error', 'message': 
+                                 'Form submission failed', 'errors': 
+                                 errors_html}, status=400)
+    else:
+        form = CustomerForm()
+    
+    return render(request, 'customer/customer_create_form.html', {'form': form})

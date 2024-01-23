@@ -1,25 +1,34 @@
-$(document).ready(function(){
+function attachLibrarySubmitHandler() {
     $('#library_form').submit(function (e) {
         e.preventDefault();
         $.ajax({
         type: 'POST',
-        url: $(this).attr('action'),
+        url: '/libraries/library/createLibrary/modal/',
         data: $(this).serialize(),
         success: function(response) {
-            if(response.success) {
+            if(response.status === 'success') {
                 $('#createLibraryModal').modal('hide');
                 $('#library_form')[0].reset();
-
                 location.reload();
             }
             else {
-                $('#libraryBodyModal').html(response)
+                // Update the form with errors
+                $('#libraryBodyModal').html(response.errors);
+                attachLibrarySubmitHandler();
             }
         },
-        error: function () {
-            // Handle errors if any
-            alert('Error submitting form');
+        error: function (error) {
+            // Handle the error response
+            if (error.responseJSON && error.responseJSON.status === 'error') {
+                // Update the form with errors
+                $('#libraryBodyModal').html(error.responseJSON.errors);
+                attachLibrarySubmitHandler();
+            }
         }
         });
     })
+}
+
+$(document).ready(function(){
+    attachLibrarySubmitHandler();
 });

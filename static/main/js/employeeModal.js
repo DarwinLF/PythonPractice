@@ -1,26 +1,34 @@
-$(document).ready(function(){
+function attachEmployeeSubmitHandler() {
     $('#employee_form').submit(function (e) {
         e.preventDefault();
         $.ajax({
         type: 'POST',
-        url: $(this).attr('action'),
+        url: '/persons/employee/createEmployee/modal/',
         data: $(this).serialize(),
         success: function(response) {
-            if(response.success) {
+            if(response.status === 'success') {
                 $('#createEmployeeModal').modal('hide');
                 $('#employee_form')[0].reset();
-
                 location.reload();
             }
             else {
-                $('#employeeBodyModal').html(response)
+                $('#employeeBodyModal').html(response.errors)
                 $('#libraryEmployeeButton').hide();
+                attachEmployeeSubmitHandler();
             }
         },
-        error: function () {
+        error: function (error) {
             // Handle errors if any
-            alert('Error submitting form');
+            if (error.responseJSON && error.responseJSON.status === 'error') {
+                // Update the form with errors
+                $('#employeeBodyModal').html(error.responseJSON.errors);
+                attachEmployeeSubmitHandler();
+            }
         }
         });
     })
+}
+
+$(document).ready(function(){
+    attachEmployeeSubmitHandler();
 });

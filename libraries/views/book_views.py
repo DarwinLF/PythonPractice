@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.views import generic
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 
@@ -85,3 +87,21 @@ class DetailView(generic.DetailView):
     model = Book
     template_name = 'book/book_detail.html'
     context_object_name = 'model'
+
+def create_modal(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'status': 'success', 'message': 
+                                 'Form submitted successfully'})
+        else:
+            errors_html = render(request, 'book/book_create_form.html', 
+                                 {'form': form}).content.decode('utf-8')
+            return JsonResponse({'status': 'error', 'message': 
+                                 'Form submission failed', 'errors': 
+                                 errors_html}, status=400)
+    else:
+        form = BookForm()
+    
+    return render(request, 'book/book_create_form.html', {'form': form})
