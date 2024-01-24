@@ -249,14 +249,14 @@ class CreateViewTests(TestCase):
         self.customer1.refresh_from_db()
         self.assertEqual(self.customer1.status.name, 'Active Borrower')
 
-    def test_customer_with_status_not_equal_to_active_borrower_or_suspended(self):
+    def test_customer_with_status_not_equal_to_active_borrower_overdue_or_suspended(self):
         customer2 = Customer.objects.create(first_name='Jackson', 
                                             last_name='Jonson', 
                                             rnc='402-3070960-7',
                                             birthday=date(1998, 2, 8), 
                                             library=self.library1,
                                             credit_time = 30,
-                                            status=self.customerStatus[2])
+                                            status=self.customerStatus[1])
         
         data1 = create_rent(self.book1.pk, 1, customer2.pk, 
                             self.employee1.pk, self.library1.pk,
@@ -267,14 +267,14 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_create_form.html')
         self.assertEqual(Rent.objects.count(), 0)
 
-    def test_customer_with_status_not_equal_to_active_borrower_or_suspended_and_past_rent(self):
+    def test_customer_with_status_not_equal_to_active_borrower_overdue_or_suspended_and_past_rent(self):
         customer2 = Customer.objects.create(first_name='Jackson', 
                                             last_name='Jonson', 
                                             rnc='402-3070960-7',
                                             birthday=date(1998, 2, 8), 
                                             library=self.library1,
                                             credit_time = 30,
-                                            status=self.customerStatus[2])
+                                            status=self.customerStatus[1])
         rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
                                     customer = customer2, 
                                     employee = self.employee1, 
@@ -293,14 +293,14 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_create_form.html')
         self.assertEqual(Rent.objects.count(), 1)
 
-    def test_customer_with_status_not_equal_to_active_borrower_or_suspended_and_on_time_rent(self):
+    def test_customer_with_status_not_equal_to_active_borrower_overdue_or_suspended_and_on_time_rent(self):
         customer2 = Customer.objects.create(first_name='Jackson', 
                                             last_name='Jonson', 
                                             rnc='402-3070960-7',
                                             birthday=date(1998, 2, 8), 
                                             library=self.library1,
                                             credit_time = 30,
-                                            status=self.customerStatus[2])
+                                            status=self.customerStatus[1])
         rent1 = Rent.objects.create(book = self.book1, amount_to_rent = 1,
                                     customer = customer2, 
                                     employee = self.employee1, 
@@ -309,6 +309,8 @@ class CreateViewTests(TestCase):
                                     due_date = date(2025, 6, 12),
                                     status = self.rentStatus[0]
                                     )
+        
+        #import ipdb; ipdb.set_trace()
         
         data1 = create_rent(self.book1.pk, 1, customer2.pk, 
                             self.employee1.pk, self.library1.pk,
@@ -506,6 +508,7 @@ class UpdateViewTests(TestCase):
         self.assertTemplateUsed(response, 'rent/rent_index.html')
         self.assertEqual(Rent.objects.count(), 2)
         self.customer2.refresh_from_db()
+        #import ipdb; ipdb.set_trace()
         self.assertEqual(self.customer2.status.name, 
                          'Suspended Borrowing Privileges')
 

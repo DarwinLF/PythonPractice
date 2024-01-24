@@ -1,6 +1,8 @@
+from datetime import date
+
 class BookService:
     @staticmethod
-    def AdjustStatusOfBook(bookId):
+    def adjust_status(bookId):
         from libraries.models import Book, BookStatus
         book = Book.objects.get(pk=bookId)
         status = BookStatus.objects.all()
@@ -16,3 +18,16 @@ class BookService:
             book.status = status[0]
 
         book.save()
+    
+class RentService:
+    @staticmethod
+    def update_status(rent):
+        from libraries.models import RentStatus
+
+        if rent.due_date < date.today() and rent.status.name == 'Checked Out':
+            rent.status = RentStatus.objects.get(name='Overdue')
+
+        rent.save()
+        rent.customer = rent.customer.update_status()
+
+        return rent

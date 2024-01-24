@@ -43,8 +43,11 @@ class IndexView(generic.ListView):
         queryset = self.get_queryset()
 
         # Modify each instance using your_model_method
-        modified_instances = [instance.CheckRentAvailability() 
-                              for instance in queryset]
+        modified_instances = []
+        for customer in queryset:
+            for rent in customer.rents_due.all():
+                rent = rent.update_status()
+            modified_instances.append(customer)
 
         # Override the object_list attribute with the modified instances
         self.object_list = modified_instances
@@ -82,6 +85,16 @@ class UpdateView(generic.UpdateView):
         context = super().get_context_data(**kwargs)
         context['library_form'] = LibraryForm()
         return context
+    
+    def get(self, request, *args, **kwargs):
+        # Get the Rent object
+        customer = self.get_object()
+
+        # Run update_status before rendering the page
+        for rent in customer.rents_due.all():
+            rent = rent.update_status()
+
+        return super().get(request, *args, **kwargs)
 
     # def form_valid(self, form):
     #     try:
@@ -99,10 +112,13 @@ class DetailView(generic.DetailView):
 
     def get_object(self, queryset=None):
         # Get the original object using the parent method
-        obj = super().get_object(queryset=queryset)
+        customer = super().get_object(queryset=queryset)
+
+        for rent in customer.rents_due.all():
+            rent = rent.update_status()
 
         # Modify the object using your_model_method
-        modified_object = obj.CheckRentAvailability()
+        modified_object = customer
 
         return modified_object
     

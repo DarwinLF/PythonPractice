@@ -29,18 +29,20 @@ class RentForm(forms.ModelForm):
 
     def clean(self):
         data = self.cleaned_data
+        book = data['book']
         amount_to_rent = data['amount_to_rent']
+        customer = data['customer']
         rent_date = data['rent_date']
         due_date = data['due_date']
         instance_pk = self.instance.pk if self.instance else None
 
         if instance_pk: #the model is updated
-            books_available = data['book'].available(instance_pk)
+            books_available = book.available(instance_pk)
 
         else: #the model is created
-            books_available = data['book'].available()
+            books_available = book.available()
 
-            if not data['customer'].IsRentAvailable():
+            if not customer.is_rent_available():
                 self.add_error('customer', 'The customer can\'t rent')
 
         if amount_to_rent <= 0:

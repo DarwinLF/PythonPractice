@@ -42,5 +42,5 @@ class Book(models.Model):
     def available(self, rent_pk=0):
         return self.quantity - self.rented(rent_pk)
     
-    def AdjustStatusOfBook(self):
-        return BookService.AdjustStatusOfBook(self.pk)
+    def adjust_status(self):
+        return BookService.adjust_status(self.pk)

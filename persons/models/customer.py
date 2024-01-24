@@ -10,8 +10,8 @@ class Customer(Person):
     status = models.ForeignKey('persons.CustomerStatus', 
                                on_delete = models.PROTECT)
     
-    def IsRentAvailable(self):
-        return CustomerService.IsRentAvailable(self.pk)
+    def is_rent_available(self):
+        return CustomerService.is_rent_available(self.pk)
     
-    def CheckRentAvailability(self):
-        return CustomerService.CheckRentAvailability(self)
+    def update_status(self):
+        return CustomerService.update_status(self)

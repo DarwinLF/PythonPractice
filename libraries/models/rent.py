@@ -2,6 +2,8 @@ from django.db import models
 
 from datetime import date
 
+from libraries.services import RentService
+
 class Rent(models.Model):
     book = models.ForeignKey('libraries.Book', on_delete = models.PROTECT)
     amount_to_rent = models.IntegerField(default = 1)
@@ -31,3 +33,6 @@ class Rent(models.Model):
         else:
             self.modified_date = date.today()
         super().save(*args, **kwargs)
+
+    def update_status(self):
+        return RentService.update_status(self)

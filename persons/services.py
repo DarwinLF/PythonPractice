@@ -2,10 +2,10 @@ from datetime import date
 
 class CustomerService:
     @staticmethod
-    def IsRentAvailable(customerId):
+    def is_rent_available(customerId):
         from persons.models import Customer
         customer = Customer.objects.get(pk=customerId)
-        customer = customer.CheckRentAvailability()
+        customer = customer.update_status()
 
         if customer.status.name == 'Active Borrower':
             return True
@@ -13,7 +13,7 @@ class CustomerService:
             return False
 
     @staticmethod
-    def CheckRentAvailability(customer):
+    def update_status(customer):
         #import ipdb; ipdb.set_trace()
         from persons.models import CustomerStatus
         rents_due_for_customer = customer.rents_due.exclude(
@@ -23,11 +23,23 @@ class CustomerService:
                 'rent_date').rent_date
             
             if (date.today() - oldest_rent_date).days > customer.credit_time:
-                customer.status = CustomerStatus.objects.get(pk=5)
+                customer.status = CustomerStatus.objects.get(
+                    name='Suspended Borrowing Privileges')
             elif customer.status.name == 'Suspended Borrowing Privileges':
-                customer.status = CustomerStatus.objects.get(pk=1)
+                customer.status = CustomerStatus.objects.get(
+                    name='Active Borrower')
         elif customer.status.name == 'Suspended Borrowing Privileges':
-            customer.status = CustomerStatus.objects.get(pk=1)
+            customer.status = CustomerStatus.objects.get(
+                name='Active Borrower')
+
+        rents_overdue = rents_due_for_customer.filter(status__name='Overdue')
+        if rents_overdue:
+            customer.status = CustomerStatus.objects.get(
+                name='Overdue Materials')
+        elif customer.status.name == 'Overdue Materials':
+            customer.status = CustomerStatus.objects.get(
+                name='Active Borrower')
+
 
         customer.save()
             

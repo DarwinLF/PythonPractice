@@ -35,6 +35,19 @@ class IndexView(generic.ListView):
 
         return context
     
+    def get(self, request, *args, **kwargs):
+        # Get the original queryset
+        queryset = self.get_queryset()
+
+        # Modify each instance using your_model_method
+        modified_instances = [rent.update_status() 
+                              for rent in queryset]
+
+        # Override the object_list attribute with the modified instances
+        self.object_list = modified_instances
+
+        return super().get(request, *args, **kwargs)
+    
 class CreateView(generic.CreateView):
     model = Rent
     form_class = RentForm
@@ -56,8 +69,8 @@ class CreateView(generic.CreateView):
         #import ipdb; ipdb.set_trace()
 
         #AdjustStatusOfBook(form.instance.book.pk)
-        form.instance.book.AdjustStatusOfBook()
-        form.instance.customer.CheckRentAvailability()
+        form.instance.book.adjust_status()
+        form.instance.customer.update_status()
 
         return response
     
@@ -85,14 +98,29 @@ class UpdateView(generic.UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        form.instance.book.AdjustStatusOfBook()
-        form.instance.customer.CheckRentAvailability()
+        form.instance.book.adjust_status()
+        form.instance.customer.update_status()
 
         #import ipdb; ipdb.set_trace()
 
         return response
     
+    def get(self, request, *args, **kwargs):
+        # Get the Rent object
+        rent = self.get_object()
+
+        # Run update_status before rendering the page
+        rent = rent.update_status()
+
+        return super().get(request, *args, **kwargs)
+    
 class DetailView(generic.DetailView):
     model = Rent
     template_name = 'rent/rent_detail.html'
     context_object_name = 'model'
+
+    def get_object(self, queryset=None):
+        rent = super().get_object(queryset=queryset)
+        #import ipdb; ipdb.set_trace()
+        rent = rent.update_status()
+        return rent
