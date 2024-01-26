@@ -28,6 +28,5 @@ class RentService:
             rent.status = RentStatus.objects.get(name='Overdue')
 
         rent.save()
-        rent.customer = rent.customer.update_status()
 
         return rent

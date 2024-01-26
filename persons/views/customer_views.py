@@ -47,6 +47,7 @@ class IndexView(generic.ListView):
         for customer in queryset:
             for rent in customer.rents_due.all():
                 rent = rent.update_status()
+            customer = customer.update_status()
             modified_instances.append(customer)
 
         # Override the object_list attribute with the modified instances
@@ -94,6 +95,8 @@ class UpdateView(generic.UpdateView):
         for rent in customer.rents_due.all():
             rent = rent.update_status()
 
+        customer = customer.update_status()
+
         return super().get(request, *args, **kwargs)
 
     # def form_valid(self, form):
@@ -118,7 +121,7 @@ class DetailView(generic.DetailView):
             rent = rent.update_status()
 
         # Modify the object using your_model_method
-        modified_object = customer
+        modified_object = customer.update_status()
 
         return modified_object
     

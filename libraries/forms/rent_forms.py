@@ -34,6 +34,7 @@ class RentForm(forms.ModelForm):
         customer = data['customer']
         rent_date = data['rent_date']
         due_date = data['due_date']
+        status = data['status'].name
         instance_pk = self.instance.pk if self.instance else None
 
         if instance_pk: #the model is updated
@@ -57,7 +58,7 @@ class RentForm(forms.ModelForm):
             self.add_error('rent_date', 
                            'The rent date can\'t be in the future')
 
-        if due_date < date.today():
+        if due_date < date.today() and status != 'Returned':
             self.add_error('due_date', 'The due date can\'t be in the past')
         
         return data

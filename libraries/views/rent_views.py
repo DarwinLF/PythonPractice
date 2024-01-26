@@ -42,6 +42,9 @@ class IndexView(generic.ListView):
         # Modify each instance using your_model_method
         modified_instances = [rent.update_status() 
                               for rent in queryset]
+        
+        if modified_instances[0]:
+            modified_instances[0].customer = modified_instances[0].customer.update_status()
 
         # Override the object_list attribute with the modified instances
         self.object_list = modified_instances
@@ -111,6 +114,7 @@ class UpdateView(generic.UpdateView):
 
         # Run update_status before rendering the page
         rent = rent.update_status()
+        rent.customer = rent.customer.update_status()
 
         return super().get(request, *args, **kwargs)
     
@@ -123,4 +127,5 @@ class DetailView(generic.DetailView):
         rent = super().get_object(queryset=queryset)
         #import ipdb; ipdb.set_trace()
         rent = rent.update_status()
+        rent.customer = rent.customer.update_status()
         return rent
