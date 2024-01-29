@@ -164,6 +164,7 @@ class CreateViewTests(TestCase):
                            self.rentStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(Rent.objects.count(), 0)
+        self.assertTemplateUsed(response, 'rent/rent_create_form.html')
 
     def test_more_books_that_available(self):
         data = create_rent(self.book1.pk, 6, self.customer1.pk, 

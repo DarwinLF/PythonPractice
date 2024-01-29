@@ -29,6 +29,11 @@ class IndexView(generic.ListView):
             return Book.objects.filter(library_id=library_id, **filter_kwargs)
         else:
             return Book.objects.filter(**filter_kwargs)
+        
+        # Book.objects.filter(
+        #     Q (title__icontains=filter_value) |
+        #     Q (author__name__icontains=filter_value)
+        # )
     
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
