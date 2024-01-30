@@ -7,26 +7,28 @@
 {% block filter_inputs %}
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" id="filterValue" placeholder="Enter filter value">
                     <button class="btn btn-primary" onclick="filterBooks()"><i class="bi bi-box-arrow-in-right"></i></button>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <div class="row align-items-center mb-3">
                     <div class="col-md-6">
                         <select class="custom-select" id="filterGender" onchange="filterBooks()">
-                            <option value="title">Title</option>
-                            <option value="gender__name">Gender</option>
-                            <option value="status__name">Status</option>
+                            <option selected>Select Gender</option>
+                            {% for gender in genders %}
+                                <option value="{{ gender.pk }}">{{ gender.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-6">
                         <select class="custom-select" id="filterStatus" onchange="filterBooks()">
-                            <option value="title">Title</option>
-                            <option value="gender__name">Gender</option>
-                            <option value="status__name">Status</option>
+                            <option selected>Select Status</option>
+                            {% for status in statuses %}
+                                <option value="{{ status.pk }}">{{ status.name }}</option>
+                            {% endfor %}
                         </select>
                     </div> 
                 </div>

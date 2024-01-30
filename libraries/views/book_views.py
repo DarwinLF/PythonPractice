@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 
-from libraries.models import Book
+from libraries.models import Book, BookGenders, BookStatus
 from libraries.forms.book_forms import BookForm
 from libraries.forms.library_forms import LibraryForm
 from persons.forms.author_forms import AuthorForm
@@ -52,6 +52,9 @@ class IndexView(generic.ListView):
         context['filter_value'] = self.request.GET.get('filter_value', '')
         context['filter_field'] = self.request.GET.get('filter_field', 
                                                        'title')
+        context['genders'] = BookGenders.objects.all()
+        context['statuses'] = BookStatus.objects.all()
+
         if 'library_id' in self.kwargs:
             context['library_id'] = self.kwargs['library_id']
         return context
