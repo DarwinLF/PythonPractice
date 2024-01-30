@@ -17,7 +17,7 @@
                 <div class="row align-items-center mb-3">
                     <div class="col-md-6">
                         <select class="custom-select" id="filterGender" onchange="filterBooks()">
-                            <option selected>Select Gender</option>
+                            <option selected value="0">Select Gender</option>
                             {% for gender in genders %}
                                 <option value="{{ gender.pk }}">{{ gender.name }}</option>
                             {% endfor %}
@@ -25,7 +25,7 @@
                     </div>
                     <div class="col-md-6">
                         <select class="custom-select" id="filterStatus" onchange="filterBooks()">
-                            <option selected>Select Status</option>
+                            <option selected value="0">Select Status</option>
                             {% for status in statuses %}
                                 <option value="{{ status.pk }}">{{ status.name }}</option>
                             {% endfor %}
@@ -64,7 +64,8 @@
     <script>
         function filterBooks() {
             var filterValue = $("#filterValue").val();
-            var filterField = $("#filterField").val();
+            var filterGender = $("#filterGender").val();
+            var filterStatus = $("#filterStatus").val();
 
             var libraryId = {{ library_id|default:"null" }};
 
@@ -76,7 +77,8 @@
                 type: "GET",
                 data: {
                     filter_value: filterValue,
-                    filter_field: filterField
+                    filter_gender: filterGender,
+                    filter_status: filterStatus
                 },
                 success: function (data) {
                     $('#model-table tbody').html(data.html);

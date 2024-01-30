@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
+from django.db.models import Q
 
 from libraries.models import Book, BookGenders, BookStatus
 from libraries.forms.book_forms import BookForm
@@ -19,21 +20,29 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         library_id = self.kwargs.get('library_id')
         filter_value = self.request.GET.get('filter_value', '')
-        filter_field = self.request.GET.get('filter_field', 'title')
+        filter_gender_id = int(self.request.GET.get('filter_gender', '0'))
+        filter_status_id = int(self.request.GET.get('filter_status', '0'))
 
-        filter_kwargs = {
-            f"{filter_field}__icontains": filter_value
-        }
+        queryset = Book.objects.all()
 
         if library_id:
-            return Book.objects.filter(library_id=library_id, **filter_kwargs)
-        else:
-            return Book.objects.filter(**filter_kwargs)
-        
-        # Book.objects.filter(
-        #     Q (title__icontains=filter_value) |
-        #     Q (author__name__icontains=filter_value)
-        # )
+            queryset = queryset.filter(library_id=library_id)
+
+        if filter_status_id != 0:
+            queryset = queryset.filter(status_id=filter_status_id)
+
+        if filter_gender_id != 0:
+            queryset = queryset.filter(gender_id=filter_gender_id)
+
+        queryset = queryset.filter(
+            Q(title__icontains=filter_value) |
+            Q(author__first_name__icontains=filter_value) |
+            Q(author__last_name__icontains=filter_value) |
+            Q(author__alias__icontains=filter_value) |
+            Q(library__name__icontains=filter_value)
+        )
+
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -50,8 +59,8 @@ class IndexView(generic.ListView):
 
         context['model_list'] = model_list
         context['filter_value'] = self.request.GET.get('filter_value', '')
-        context['filter_field'] = self.request.GET.get('filter_field', 
-                                                       'title')
+        context['filter_gender'] = self.request.GET.get('filter_gender', '0')
+        context['filter_status'] = self.request.GET.get('filter_status', '0')
         context['genders'] = BookGenders.objects.all()
         context['statuses'] = BookStatus.objects.all()
 
