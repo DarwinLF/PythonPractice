@@ -1,11 +1,12 @@
-from django.http import JsonResponse
-from django.views import generic
+from django.views import generic, View
 from django.urls import reverse_lazy
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 from django.db.models import Q
+import openpyxl
+from openpyxl.styles import Alignment, Font
 
 from libraries.models import Book, BookGenders, BookStatus
 from libraries.forms.book_forms import BookForm
@@ -122,3 +123,65 @@ def create_modal(request):
         form = BookForm()
     
     return render(request, 'book/book_create_form.html', {'form': form})
+
+class ExcelDownloadView(View):
+    def get(self, request):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="book.xlsx"'
+
+        # Get filter parameters from URL query parameters
+        library_id = request.GET.get('library_id')
+        filter_status_id = request.GET.get('filter_status_id')
+        filter_gender_id = request.GET.get('filter_gender_id')
+        filter_value = request.GET.get('filter_value')
+
+        # Initialize queryset with all books
+        queryset = Book.objects.all()
+
+        # Apply filters
+        if library_id and library_id != '0':
+            queryset = queryset.filter(library_id=library_id)
+
+        if filter_status_id and filter_status_id != '0':
+            queryset = queryset.filter(status_id=filter_status_id)
+
+        if filter_gender_id and filter_gender_id != '0':
+            queryset = queryset.filter(gender_id=filter_gender_id)
+
+        if filter_value:
+            queryset = queryset.filter(
+                Q(title__icontains=filter_value) |
+                Q(author__first_name__icontains=filter_value) |
+                Q(author__last_name__icontains=filter_value) |
+                Q(author__alias__icontains=filter_value) |
+                Q(library__name__icontains=filter_value)
+            )
+
+        # Create Excel workbook and add data
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(['Title', 'Gender', 'Quantity', 'Author', 'Library', 'Status'])
+        for obj in queryset:
+            ws.append([obj.title, obj.gender.__str__() , obj.quantity, 
+                       obj.author.__str__(), obj.library.__str__(), 
+                       obj.status.__str__()])  # Add data rows
+
+        for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, 
+                                max_col=ws.max_column):
+            for cell in row:
+                cell.alignment = Alignment(horizontal='center', 
+                                           vertical='center')
+            
+        ws.column_dimensions['A'].width = 30
+        ws.column_dimensions['B'].width = 20
+        ws.column_dimensions['C'].width = 10
+        ws.column_dimensions['D'].width = 30
+        ws.column_dimensions['E'].width = 20
+        ws.column_dimensions['F'].width = 20
+
+        # Set font style of first row to bold
+        for cell in ws[1]:  # Iterate over cells in the first row
+            cell.font = Font(bold=True)  # Set font style to bold
+
+        wb.save(response)
+        return response

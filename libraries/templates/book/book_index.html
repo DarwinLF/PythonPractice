@@ -60,6 +60,12 @@
 
 {% block no_list %}books{% endblock %}
 
+{% block excel_button %}
+    <div class="container text-center mt-2">
+        <button class="btn btn-primary" onclick="downloadExcel()">Download Excel</button>
+    </div>
+{% endblock %}
+
 {% block extra_scripts %}
     <script>
         function filterBooks() {
@@ -69,7 +75,7 @@
 
             var libraryId = {{ library_id|default:"null" }};
 
-            var url = libraryId ? "/libraries/library/" + libraryId + "/book/" : 
+            var url = libraryId ? "/libraries/library/"+libraryId +"/book/": 
                                     "/libraries/book/";
 
             $.ajax({
@@ -93,5 +99,24 @@
                 }
             })
         })
+
+        window.onload = filterBooks
+    </script>
+    <script>
+        function downloadExcel() {
+            var filterValue = $("#filterValue").val();
+            var filterGender = $("#filterGender").val();
+            var filterStatus = $("#filterStatus").val();
+
+            var libraryId = {{ library_id|default:"0" }};
+
+            var url = '/libraries/book/download-excel/?library_id='+ 
+                    encodeURIComponent(libraryId) +
+                    '&filter_status_id=' + encodeURIComponent(filterStatus) +
+                    '&filter_gender_id=' + encodeURIComponent(filterGender) +
+                    '&filter_value=' + encodeURIComponent(filterValue)
+
+            window.location.href = url
+        }
     </script>
 {% endblock %}

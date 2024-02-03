@@ -6,8 +6,13 @@ from datetime import date
 
 from ..models import Author
 
-class IndexViewTests(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
+        self.client = Client()
+
+class IndexViewTests(BaseTestCase):
+    def setUp(self):
+        super().setUp()
         self.author1 = Author.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
@@ -15,7 +20,6 @@ class IndexViewTests(TestCase):
                                              alias = 'Esnaire'
                                              )
         self.url = reverse('persons:author_index')
-        self.client = Client()
 
     def test_get_index(self):
         response = self.client.get(self.url)
@@ -35,10 +39,10 @@ def create_author(first_name, last_name, rnc, birthday, alias):
         'alias': alias,
     }
 
-class CreateViewTests(TestCase):
+class CreateViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.url = reverse('persons:author_create')
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -90,8 +94,9 @@ class CreateViewTests(TestCase):
         self.assertFormError(response, 'form', 'birthday', 
                              'The birthday can\'t be in the future')
 
-class UpdateViewTests(TestCase):
+class UpdateViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.author1 = Author.objects.create(first_name='Darwin', 
                                              last_name='Lantigua', 
                                              rnc='402-3070960-8', 
@@ -103,7 +108,6 @@ class UpdateViewTests(TestCase):
                                              birthday=date(1999, 2, 12), 
                                              alias='Jack')
         self.url = reverse('persons:author_update', args=[self.author2.pk])
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -140,15 +144,15 @@ class UpdateViewTests(TestCase):
         self.assertEqual(self.author2.birthday, date(2000, 4, 20))
         self.assertEqual(self.author2.alias, 'Karate')
 
-class DetailViewTests(TestCase):
+class DetailViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.author = Author.objects.create(first_name='Darwin', 
                                             last_name='Lantigua', 
                                             rnc='402-3070960-8', 
                                             birthday=date(2000, 1, 8), 
                                             alias='Esnaire')
         self.url = reverse('persons:author_detail', args=[self.author.pk])
-        self.client = Client()
     
     def test_get_view(self):
         response = self.client.get(self.url)

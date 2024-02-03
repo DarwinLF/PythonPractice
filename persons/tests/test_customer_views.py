@@ -8,11 +8,14 @@ from persons.models import Customer, CustomerStatus, Employee, Author
 from libraries.models import Library, Rent, RentStatus, Book, BookGenders
 from libraries.models import BookStatus
 
-class IndexViewTests(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.library2 = Library.objects.create(name = 'libreria2',
+                                               location = 'Salcedo',
+                                               rnc = '111-1234567-2')
         self.customerStatus = CustomerStatus.objects.all()
         self.customer1 = Customer.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
@@ -47,8 +50,12 @@ class IndexViewTests(TestCase):
                                          status = self.bookStatus[0]
                                          )
         self.rentStatus = RentStatus.objects.all()
-        self.url = reverse('persons:customer_index')
         self.client = Client()
+
+class IndexViewTests(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse('persons:customer_index')
 
     def test_get_index(self):
         response = self.client.get(self.url)
@@ -92,14 +99,10 @@ def create_customer(first_name, last_name, rnc, birthday, libraryPk,
         'status': statusPk
     }
 
-class CreateViewTests(TestCase):
+class CreateViewTests(BaseTestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
-        self.customerStatus = CustomerStatus.objects.all()
+        super().setUp()
         self.url = reverse('persons:customer_create')
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -109,29 +112,21 @@ class CreateViewTests(TestCase):
                                 'customer/customer_create_form.html')
 
     def test_valid_data_post(self):
-        data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
-                               date(2000, 1, 8), self.library.pk, 7,
+        data = create_customer('Jack', 'Jonson', '402-3070960-7', 
+                               date(2000, 1, 8), self.library1.pk, 7,
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Customer.objects.count(), 1)
-        customer_created = Customer.objects.get(first_name = 'Darwin')
-        self.assertEqual(customer_created.last_name, 'Lantigua')
-        self.assertEqual(customer_created.rnc, '40230709608')
+        self.assertEqual(Customer.objects.count(), 2)
+        customer_created = Customer.objects.last()
+        self.assertEqual(customer_created.first_name, 'Jack')
+        self.assertEqual(customer_created.last_name, 'Jonson')
+        self.assertEqual(customer_created.rnc, '40230709607')
 
     def test_duplicate_rnc(self):
-        customer = Customer.objects.create(first_name = 'Darwin',
-                                           last_name = 'Lantigua',
-                                           rnc = '402-3070960-8',
-                                           birthday = date(2000, 1, 8),
-                                           library = self.library,
-                                           credit_time = 7,
-                                           status = self.customerStatus[0]
-                                           )
-
         data = create_customer('Jackson', 'Jonson', '402-30709608', 
-                               date(1999, 2, 12), self.library.pk, 7,
+                               date(1999, 2, 12), self.library1.pk, 7,
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -143,34 +138,26 @@ class CreateViewTests(TestCase):
                                                  'Jackson').exists())
 
     def test_invalid_rnc(self):
-        data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
-                               date(2000, 1, 8), self.library.pk, 7,
+        data = create_customer('Jack', 'Jonson', '402-307060-8', 
+                               date(2000, 1, 8), self.library1.pk, 7,
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Customer.objects.count(), 0)
+        self.assertEqual(Customer.objects.count(), 1)
         self.assertFalse(Customer.objects.filter(first_name=
-                                                 'Darwin').exists())
+                                                 'Jack').exists())
 
     #change in the future
     def test_future_birthday(self):
-        data = create_customer('Darwin', 'Lantigua', '402-307060-8', 
-                               date(2050, 1, 8), self.library.pk, 7,
+        data = create_customer('Jack', 'Jonson', '402-307060-7', 
+                               date(2050, 1, 8), self.library1.pk, 7,
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
-        self.assertEqual(Customer.objects.count(), 0)
+        self.assertEqual(Customer.objects.count(), 1)
 
     def test_same_customer_same_library(self):
-        customer = Customer.objects.create(first_name = 'Darwin',
-                                           last_name = 'Lantigua',
-                                           rnc = '402-3070960-8',
-                                           birthday = date(2000, 1, 8),
-                                           library = self.library,
-                                           credit_time = 7,
-                                           status = self.customerStatus[0]
-                                           )
         data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
-                               date(2000, 1, 8), self.library.pk, 7,
+                               date(2000, 1, 8), self.library1.pk, 7,
                                self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -179,42 +166,17 @@ class CreateViewTests(TestCase):
         self.assertEqual(Customer.objects.count(), 1)
 
     def test_same_customer_different_library(self):
-        customer = Customer.objects.create(first_name = 'Darwin',
-                                           last_name = 'Lantigua',
-                                           rnc = '402-3070960-8',
-                                           birthday = date(2000, 1, 8),
-                                           library = self.library,
-                                           credit_time = 7,
-                                           status = self.customerStatus[0]
-                                           )
-        library2 = Library.objects.create(name = 'libreria2',
-                                          location = 'Salcedo',
-                                          rnc = '123-1234567-2')
         data = create_customer('Darwin', 'Lantigua', '402-3070960-8', 
-                               date(2000, 1, 8), library2.pk,
+                               date(2000, 1, 8), self.library2.pk,
                                7, self.customerStatus[0].pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer/customer_index.html')
         self.assertEqual(Customer.objects.count(), 2)
 
-class UpdateViewTests(TestCase):
+class UpdateViewTests(BaseTestCase):
     def setUp(self):
-        self.library1 = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
-        self.library2 = Library.objects.create(name = 'libreria2',
-                                               location = 'Salcedo',
-                                               rnc = '111-1234567-2')
-        self.customerStatus = CustomerStatus.objects.all()
-        self.customer1 = Customer.objects.create(first_name='Darwin', 
-                                                 last_name='Lantigua', 
-                                                 rnc='402-3070960-8', 
-                                                 birthday=date(2000, 1, 8), 
-                                                 library=self.library1,
-                                                 credit_time = 7,
-                                                 status=self.customerStatus[0]
-                                                 )
+        super().setUp()
         self.customer2 = Customer.objects.create(first_name='Jackson', 
                                                  last_name='Knight', 
                                                  rnc='402-3070960-9', 
@@ -231,34 +193,8 @@ class UpdateViewTests(TestCase):
                                                  credit_time = 7,
                                                  status=self.customerStatus[0]
                                                  )
-        self.employee1 = Employee.objects.create(first_name='Darwin', 
-                                                last_name='Lantigua', 
-                                                rnc='402-3070960-8', 
-                                                birthday=date(2000, 1, 8), 
-                                                library=self.library1)
-        self.author1 = Author.objects.create(first_name = 'Darwin',
-                                             last_name = 'Lantigua',
-                                             rnc = '402-3070960-8',
-                                             birthday = date(2000, 1, 8),
-                                             alias = 'Esnaire'
-                                             )
-        self.bookGenders = BookGenders.objects.all()
-        self.bookStatus = BookStatus.objects.all()
-        self.book1 = Book.objects.create(title = 'Our love is live',
-                                         published_date = date(2020, 6, 2),
-                                         isbn = '123-1-123-12345-1',
-                                         gender = self.bookGenders[0],
-                                         quantity = 5,
-                                         rent_price = 300,
-                                         sale_price = 500,
-                                         author = self.author1,
-                                         library = self.library1,
-                                         status = self.bookStatus[0]
-                                         )
-        self.rentStatus = RentStatus.objects.all()
         self.url = reverse('persons:customer_update', 
                            args=[self.customer2.pk])
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -336,48 +272,11 @@ class UpdateViewTests(TestCase):
         self.customer2.refresh_from_db()
         self.assertEqual(self.customer2.status.name, 'Overdue Materials')
 
-class DetailViewTests(TestCase):
+class DetailViewTests(BaseTestCase):
     def setUp(self):
-        self.library1 = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
-        self.customerStatus = CustomerStatus.objects.all()
-        self.customer1 = Customer.objects.create(first_name = 'Darwin',
-                                             last_name = 'Lantigua',
-                                             rnc = '402-3070960-8',
-                                             birthday = date(2000, 1, 8),
-                                             library = self.library1,
-                                             credit_time = 7,
-                                             status = self.customerStatus[0]
-                                             )
-        self.employee1 = Employee.objects.create(first_name='Darwin', 
-                                                last_name='Lantigua', 
-                                                rnc='402-3070960-8', 
-                                                birthday=date(2000, 1, 8), 
-                                                library=self.library1)
-        self.author1 = Author.objects.create(first_name = 'Darwin',
-                                             last_name = 'Lantigua',
-                                             rnc = '402-3070960-8',
-                                             birthday = date(2000, 1, 8),
-                                             alias = 'Esnaire'
-                                             )
-        self.bookGenders = BookGenders.objects.all()
-        self.bookStatus = BookStatus.objects.all()
-        self.book1 = Book.objects.create(title = 'Our love is live',
-                                         published_date = date(2020, 6, 2),
-                                         isbn = '123-1-123-12345-1',
-                                         gender = self.bookGenders[0],
-                                         quantity = 5,
-                                         rent_price = 300,
-                                         sale_price = 500,
-                                         author = self.author1,
-                                         library = self.library1,
-                                         status = self.bookStatus[0]
-                                         )
-        self.rentStatus = RentStatus.objects.all()
+        super().setUp()
         self.url = reverse('persons:customer_detail', 
                            args=[self.customer1.pk])
-        self.client = Client()
     
     def test_get_view(self):
         response = self.client.get(self.url)

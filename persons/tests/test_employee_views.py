@@ -7,19 +7,26 @@ from datetime import date
 from ..models import Employee
 from libraries.models import Library
 
-class IndexViewTests(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
+        self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
+        self.library2 = Library.objects.create(name = 'libreria2',
+                                               location = 'Salcedo',
+                                               rnc = '111-1234567-2')
+        self.client = Client()
+
+class IndexViewTests(BaseTestCase):
+    def setUp(self):
+        super().setUp()
         self.employee = Employee.objects.create(first_name = 'Darwin',
                                              last_name = 'Lantigua',
                                              rnc = '402-3070960-8',
                                              birthday = date(2000, 1, 8),
-                                             library = self.library
+                                             library = self.library1
                                              )
         self.url = reverse('persons:employee_index')
-        self.client = Client()
 
     def test_get_index(self):
         response = self.client.get(self.url)
@@ -40,13 +47,10 @@ def create_employee(first_name, last_name, rnc, birthday, library):
         'library': library,
     }
 
-class CreateViewTests(TestCase):
+class CreateViewTests(BaseTestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
+        super().setUp()
         self.url = reverse('persons:employee_create')
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -57,7 +61,7 @@ class CreateViewTests(TestCase):
 
     def test_valid_data_post(self):
         data = create_employee('Darwin', 'Lantigua', '402-3070960-8', 
-                               date(2000, 1, 8), self.library.pk)
+                               date(2000, 1, 8), self.library1.pk)
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
@@ -71,11 +75,11 @@ class CreateViewTests(TestCase):
                                            last_name = 'Lantigua',
                                            rnc = '402-3070960-8',
                                            birthday = date(2000, 1, 8),
-                                           library = self.library
+                                           library = self.library1
                                            )
 
         data = create_employee('Jackson', 'Jonson', '402-30709608', 
-                               date(1999, 2, 12), self.library.pk)
+                               date(1999, 2, 12), self.library1.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 
@@ -87,7 +91,7 @@ class CreateViewTests(TestCase):
 
     def test_invalid_rnc(self):
         data = create_employee('Darwin', 'Lantigua', '402-307060-8', 
-                               date(2000, 1, 8), self.library.pk)
+                               date(2000, 1, 8), self.library1.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Employee.objects.count(), 0)
@@ -97,7 +101,7 @@ class CreateViewTests(TestCase):
     #change in the future
     def test_future_birthday(self):
         data = create_employee('Darwin', 'Lantigua', '402-307060-8', 
-                               date(2050, 1, 8), self.library.pk)
+                               date(2050, 1, 8), self.library1.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(Employee.objects.count(), 0)
 
@@ -106,10 +110,10 @@ class CreateViewTests(TestCase):
                                            last_name = 'Lantigua',
                                            rnc = '402-3070960-8',
                                            birthday = date(2000, 1, 8),
-                                           library = self.library
+                                           library = self.library1
                                            )
         data = create_employee('Darwin', 'Lantigua', '402-3070960-8', 
-                               date(2000, 1, 8), self.library.pk)
+                               date(2000, 1, 8), self.library1.pk)
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 
@@ -121,7 +125,7 @@ class CreateViewTests(TestCase):
                                            last_name = 'Lantigua',
                                            rnc = '402-3070960-8',
                                            birthday = date(2000, 1, 8),
-                                           library = self.library
+                                           library = self.library1
                                            )
         library2 = Library.objects.create(name = 'libreria2',
                                           location = 'Salcedo',
@@ -133,14 +137,9 @@ class CreateViewTests(TestCase):
         self.assertTemplateUsed(response, 'employee/employee_index.html')
         self.assertEqual(Employee.objects.count(), 2)
 
-class UpdateViewTests(TestCase):
+class UpdateViewTests(BaseTestCase):
     def setUp(self):
-        self.library1 = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
-        self.library2 = Library.objects.create(name = 'libreria2',
-                                               location = 'Salcedo',
-                                               rnc = '111-1234567-2')
+        super().setUp()
         self.employee1 = Employee.objects.create(first_name='Darwin', 
                                                  last_name='Lantigua', 
                                                  rnc='402-3070960-8', 
@@ -158,7 +157,6 @@ class UpdateViewTests(TestCase):
                                                  library=self.library2)
         self.url = reverse('persons:employee_update', 
                            args=[self.employee2.pk])
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -209,18 +207,15 @@ class UpdateViewTests(TestCase):
         self.employee2.refresh_from_db()
         self.assertEqual(self.employee2.library, self.library1)
 
-class DetailViewTests(TestCase):
+class DetailViewTests(BaseTestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'libreria1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
+        super().setUp()
         self.employee = Employee.objects.create(first_name='Darwin', 
                                                 last_name='Lantigua', 
                                                 rnc='402-3070960-8', 
                                                 birthday=date(2000, 1, 8), 
-                                                library=self.library)
+                                                library=self.library1)
         self.url = reverse('persons:employee_detail', args=[self.employee.pk])
-        self.client = Client()
     
     def test_get_view(self):
         response = self.client.get(self.url)

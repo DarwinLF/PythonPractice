@@ -32,6 +32,8 @@ urlpatterns = [
           name='book_update'),
      path('book/createBook/modal/', book_views.create_modal,
           name='book_create_modal'),
+     path('book/download-excel/', book_views.ExcelDownloadView.as_view(), 
+          name='download_book_excel'),
      path('rent/', rent_views.IndexView.as_view(), name='rent_index'),
      path('rent/createRent/', rent_views.CreateView.as_view(), 
           name='rent_create'),

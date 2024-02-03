@@ -3,13 +3,17 @@ from django.urls import reverse
 
 from libraries.models import Library
 
-class IndexViewTests(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
                                                location = 'Tenares',
                                                rnc = '123-1234567-1')
-        self.url = reverse('libraries:library_index')
         self.client = Client()
+
+class IndexViewTests(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse('libraries:library_index')
 
     def test_get_index(self):
         response = self.client.get(self.url)
@@ -27,10 +31,10 @@ def create_library(name, location, rnc):
         'rnc': rnc,
     }
 
-class CreateViewTests(TestCase):
+class CreateViewTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.url = reverse('libraries:library_create')
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -43,15 +47,12 @@ class CreateViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Library.objects.count(), 1)
+        self.assertEqual(Library.objects.count(), 2)
         library_created = Library.objects.get(name = 'libreria2')
         self.assertEqual(library_created.location, 'Salcedo')
         self.assertEqual(library_created.rnc, '11122222223')
 
     def test_duplicate_rnc(self):
-        library = Library.objects.create(name='library1', location='Tenares', 
-                                         rnc='123-1234567-1')
-
         data = create_library('libreria2', 'Salcedo', '123-12345671')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -62,22 +63,19 @@ class CreateViewTests(TestCase):
         self.assertFalse(Library.objects.filter(name='libreria2').exists())
 
     def test_invalid_rnc(self):
-        data = create_library('libreria1', 'Tenares', '123-123457-1')
+        data = create_library('libreria3', 'Tenares', '123-123457-1')
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(Library.objects.filter(name='libreria1').exists())
+        self.assertFalse(Library.objects.filter(name='libreria3').exists())
 
-class UpdateViewTests(TestCase):
+class UpdateViewTests(BaseTestCase):
     def setUp(self):
-        self.library1 = Library.objects.create(name='library1', 
-                                               location='Tenares', 
-                                               rnc='123-1234567-1')
+        super().setUp()
         self.library2 = Library.objects.create(name='library2', 
                                                location='Salcedo', 
                                                rnc='111-2222222-3')
         self.url = reverse('libraries:library_update', 
                            args=[self.library2.pk])
-        self.client = Client()
 
     def test_get_view(self):
         response = self.client.get(self.url)
@@ -110,17 +108,14 @@ class UpdateViewTests(TestCase):
         self.assertEqual(self.library2.location, 'Santiago')
         self.assertEqual(self.library2.rnc, '11122222223')
 
-class DetailViewTests(TestCase):
+class DetailViewTests(BaseTestCase):
     def setUp(self):
-        self.library = Library.objects.create(name = 'library1', 
-                                               location = 'Tenares',
-                                               rnc = '123-1234567-1')
-        self.url = reverse('libraries:library_detail', args=[self.library.pk])
-        self.client = Client()
+        super().setUp()
+        self.url = reverse('libraries:library_detail', args=[self.library1.pk])
     
     def test_get_view(self):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'library/library_detail.html')
-        self.assertEqual(response.context['model'], self.library)
+        self.assertEqual(response.context['model'], self.library1)
