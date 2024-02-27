@@ -84,7 +84,8 @@ class IndexViewTests(BaseTestCase):
         self.assertEqual(len(response.context['model_list']), 4)
 
     def test_filter_by_value1(self):
-        params = {'filter_value': 'our l', 'filter_gender': 0, 'filter_status': 0}
+        params = {'filter_value': 'our l', 'filter_gender': 0, 
+                  'filter_status': 0}
         query_string = urlencode(params)
         url = f"{reverse('libraries:book_index')}?{query_string}"
 
@@ -94,7 +95,8 @@ class IndexViewTests(BaseTestCase):
         self.assertEqual(response.context['model_list'][0], self.book1)
 
     def test_filter_by_value2(self):
-        params = {'filter_value': 'libreria2', 'filter_gender': 0, 'filter_status': 0}
+        params = {'filter_value': 'libreria2', 'filter_gender': 0, 
+                  'filter_status': 0}
         query_string = urlencode(params)
         url = f"{reverse('libraries:book_index')}?{query_string}"
 
@@ -292,7 +294,8 @@ class ExcelDownloadViewTests(BaseTestCase):
         self.url = reverse('libraries:download_book_excel')
 
     def test_default_get_view(self):
-        params = {'library_id': 0, 'filter_status_id': 0, 'filter_gender_id': 0, 'filter_value': ''}
+        params = {'library_id': 0, 'filter_status_id': 0, 
+                  'filter_gender_id': 0, 'filter_value': ''}
         query_string = urlencode(params)
         url = f"{self.url}?{query_string}"
 
@@ -300,7 +303,8 @@ class ExcelDownloadViewTests(BaseTestCase):
         # Check if the content type is correct
         self.assertEqual(response['Content-Type'], 'application/ms-excel')
         # Check if the Content-Disposition header is set correctly
-        self.assertIn('attachment; filename="book.xlsx"', response['Content-Disposition'])
+        self.assertIn('attachment; filename="book.xlsx"', 
+                      response['Content-Disposition'])
         #import ipdb; ipdb.set_trace()
         # Load workbook from response content
         wb = openpyxl.load_workbook(BytesIO(response.content))
@@ -309,30 +313,36 @@ class ExcelDownloadViewTests(BaseTestCase):
         # Assuming the first row contains headers
         headers = [cell.value for cell in ws[1]]
         # Assuming the headers are 'Title', 'Gender', 'Quantity', 'Author', 'Library', 'Status'
-        expected_headers = ['Title', 'Gender', 'Quantity', 'Author', 'Library', 'Status']
+        expected_headers = ['Title', 'Gender', 'Quantity', 'Author',
+                             'Library', 'Status']
         # Assert headers match
         self.assertEqual(headers, expected_headers)
 
         row1 = [cell.value for cell in ws[2]]
-        expected_row1 = ['Our love is live', 'Romance', 5, 'Darwin Lantigua (Esnaire)', 'libreria1', 'Available']
+        expected_row1 = ['Our love is live', 'Romance', 5, 
+                         'Darwin Lantigua (Esnaire)', 'libreria1', 'Available']
         self.assertEqual(row1, expected_row1)
 
         row2 = [cell.value for cell in ws[3]]
-        expected_row2 = ['Gamer', 'Fantasy', 6, 'Darwin Lantigua (Esnaire)', 'libreria2', 'Available']
+        expected_row2 = ['Gamer', 'Fantasy', 6, 'Darwin Lantigua (Esnaire)', 
+                         'libreria2', 'Available']
         self.assertEqual(row2, expected_row2)
 
         row3 = [cell.value for cell in ws[4]]
-        expected_row3 = ['Touch your heart', 'Romance', 6, 'Darwin Lantigua (Esnaire)', 'libreria1', 'Spent']
+        expected_row3 = ['Touch your heart', 'Romance', 6, 
+                         'Darwin Lantigua (Esnaire)', 'libreria1', 'Spent']
         self.assertEqual(row3, expected_row3)
 
         row4 = [cell.value for cell in ws[5]]
-        expected_row4 = ['Learn to code', 'Non-Fiction', 6, 'Darwin Lantigua (Esnaire)', 'libreria2', 'Reference Only']
+        expected_row4 = ['Learn to code', 'Non-Fiction', 6, 
+                         'Darwin Lantigua (Esnaire)', 'libreria2', 'Reference Only']
         self.assertEqual(row4, expected_row4)
 
         wb.close()
 
     def test_filter_by_value1(self):
-        params = {'library_id': 0, 'filter_status_id': 0, 'filter_gender_id': 0, 'filter_value': 'ga'}
+        params = {'library_id': 0, 'filter_status_id': 0, 
+                  'filter_gender_id': 0, 'filter_value': 'ga'}
         query_string = urlencode(params)
         url = f"{self.url}?{query_string}"
 
@@ -340,7 +350,8 @@ class ExcelDownloadViewTests(BaseTestCase):
         wb = openpyxl.load_workbook(BytesIO(response.content))
         ws = wb.active
         row1 = [cell.value for cell in ws[2]]
-        expected_row1 = ['Gamer', 'Fantasy', 6, 'Darwin Lantigua (Esnaire)', 'libreria2', 'Available']
+        expected_row1 = ['Gamer', 'Fantasy', 6, 'Darwin Lantigua (Esnaire)',
+                          'libreria2', 'Available']
         self.assertEqual(row1, expected_row1)
 
         wb.close()

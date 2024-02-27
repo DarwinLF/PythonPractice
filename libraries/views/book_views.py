@@ -160,7 +160,8 @@ class ExcelDownloadView(View):
         # Create Excel workbook and add data
         wb = openpyxl.Workbook()
         ws = wb.active
-        ws.append(['Title', 'Gender', 'Quantity', 'Author', 'Library', 'Status'])
+        ws.append(['Title', 'Gender', 'Quantity', 'Author', 'Library', 
+                   'Status'])
         for obj in queryset:
             ws.append([obj.title, obj.gender.__str__() , obj.quantity, 
                        obj.author.__str__(), obj.library.__str__(), 
