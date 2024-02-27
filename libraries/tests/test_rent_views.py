@@ -6,6 +6,8 @@ from datetime import date
 from libraries.models import Rent, RentStatus, Book, Library, BookStatus, BookGenders
 from persons.models import Author, Customer, CustomerStatus, Employee
 
+rent_date_now = date.today()
+
 class BaseTestCase(TestCase):
     def setUp(self):
         self.library1 = Library.objects.create(name = 'libreria1', 
@@ -56,7 +58,7 @@ class BaseTestCase(TestCase):
                                          customer = self.customer1, 
                                          employee = self.employee1, 
                                          library = self.library1,
-                                         rent_date = date(2024, 2, 1),
+                                         rent_date = rent_date_now,
                                          due_date = date(2025, 6, 12),
                                          status = self.rentStatus[0]
                                          )
@@ -219,7 +221,7 @@ class CreateViewTests(BaseTestCase):
     def test_without_rent_after_credit_time(self):
         data1 = create_rent(self.book1.pk, 1, self.customer1.pk, 
                             self.employee1.pk, self.library1.pk,
-                            date(2024, 1, 29), date(2024, 6, 12),
+                            rent_date_now, date(2024, 6, 12),
                             self.rentStatus[0].pk)
         response = self.client.post(self.url, data1, follow=True)
 
@@ -231,7 +233,7 @@ class CreateViewTests(BaseTestCase):
 
         data2 = create_rent(self.book1.pk, 1, self.customer1.pk, 
                             self.employee1.pk, self.library1.pk,
-                            date(2024, 1, 30), date(2024, 6, 12),
+                            rent_date_now, date(2024, 6, 12),
                             self.rentStatus[0].pk)
         response = self.client.post(self.url, data2, follow=True)
 
@@ -411,7 +413,7 @@ class UpdateViewTests(BaseTestCase):
         url =  reverse('libraries:rent_create')
         data1 = create_rent(self.book1.pk, 4, self.customer1.pk, 
                            self.employee1.pk, self.library1.pk,
-                           date(2024, 2, 1), date(2025, 6, 12),
+                           rent_date_now, date(2025, 6, 12),
                            self.rentStatus[0].pk)
         response = self.client.post(url, data1, follow=True)
         self.assertTemplateUsed(response, 'rent/rent_index.html')
