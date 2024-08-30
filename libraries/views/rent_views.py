@@ -43,8 +43,9 @@ class IndexView(generic.ListView):
         modified_instances = [rent.update_status() 
                               for rent in queryset]
         
-        if modified_instances[0]:
-            modified_instances[0].customer = modified_instances[0].customer.update_status()
+        if modified_instances:
+            if modified_instances[0]:
+                modified_instances[0].customer = modified_instances[0].customer.update_status()
 
         # Override the object_list attribute with the modified instances
         self.object_list = modified_instances
